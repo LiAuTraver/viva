@@ -1,11 +1,11 @@
-#include "generic.h"
+#include "viva.h"
 
 void test_typename(void) {
 	size_t s;
 	ptrdiff_t p;
 	intmax_t i;
 
-	const int c = 0;
+	val c = 0;
 	int ai[3] = {0};
 
 	printf("size_t is '%s'\n", reflexpr(s));

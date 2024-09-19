@@ -5,9 +5,8 @@
 #define _DEBUG 1
 #endif
 #include <stdio.h>
-#include "generic.h"
 #include "test.h"
-#include "common.h"
+#include "viva.h"
 result_t a_error_res(){
 	return_error(kERR_UNKNOWN, "Unknown error");
 }
