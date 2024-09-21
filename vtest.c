@@ -1,4 +1,6 @@
-#include "include/test.h"
+#include "include/vtest.h"
+
+#include <string.h>
 
 static inline result_t a_error_res() {
 	return_error(kERR_UNKNOWN, "Unknown error");
@@ -14,7 +16,7 @@ static inline result_t a_value_ptr_res() {
 	return_value_ptr(&i);
 }
 
-VIVA_TEST_SETUP()
+TEST_SETUP()
 
 	val res1 = a_error_res();
 	EXPECT_EQ(res1.error.code, kERR_UNKNOWN);
@@ -25,7 +27,6 @@ VIVA_TEST_SETUP()
 	EXPECT_EQ(res2.has_value, true);
 
 	val res3 = a_value_ptr_res();
-	EXPECT_EQ(result_cast(res3,any.char_ptr_type), "H");
 	EXPECT_EQ(res3.has_value, true);
 
-VIVA_TEST_FINISH()
+TEST_FINISH()

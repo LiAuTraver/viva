@@ -38,12 +38,16 @@ extern "C" {
 #endif
 
 #ifdef  VIVA_HAS_C23
+// C23 changed the usage of `auto` keyword, make it more like C++'s.
 #define var auto
 #define val const auto
 #else
 // #ifdef defined(__GNUC__) || defined(__clang__)
-#define var __auto_type
-#define val const __auto_type
+// GNU and Clang support `__auto_type` as an extension before C23.
+#define var auto
+#define val const auto
+// #define var __auto_type
+// #define val const __auto_type
 // #else
 // #error "currently only support GCC and Clang"
 // #endif
@@ -56,6 +60,7 @@ extern "C" {
 #define imaginary _Imaginary
 #define generic(_T, ...) _Generic((_T), __VA_ARGS__)
 #if ! defined (__cplusplus) && ! defined (VIVA_HAS_C23)
+// C23 standardize the those keywords.
 #define thread_local _Thread_local
 #define static_assert _Static_assert
 #define alignas _Alignas
@@ -73,7 +78,22 @@ extern "C" {
 #else
 #define VIVA_DEBUG_ENABLED 0
 #endif
+#if defined(__i386__) || defined(__x86_64__)
+#define VIVA_DEBUG_SIGTRAP() \
+  __asm__ __volatile__("int {$}3":)
+#elif defined(__arm__)
+#define VIVA_DEBUG_SIGTRAP \
+  __asm__ __volatile__("udf #0xfe")
+#elif defined(__aarch64__)
+#define VIVA_DEBUG_SIGTRAP \
+  __asm__ __volatile__("brk #0xf000")
+#else
+#define VIVA_DEBUG_SIGTRAP \
+  __asm__ __volatile__("unimplemented")
+#endif
+#pragma endregion
 
+#pragma region variadic macros
 /// @see https://stackoverflow.com/questions/11761703/overloading-macro-on-number-of-arguments
 /// Example usage: @code
 /// definition for FOO
@@ -107,18 +127,20 @@ extern "C" {
 #define VIVA__VFUNC(func, ...) VIVA__VFUNC_IMPL(func, VIVA__NARG__(__VA_ARGS__)) (__VA_ARGS__)
 
 #pragma endregion
+
 #ifdef __SIZEOF_INT128__
-	// only in 64-bit machine
-	typedef __int128_t int128_t;
-	typedef __uint128_t uint128_t;
+// only in 64-bit machine
+typedef __int128_t int128_t;
+typedef __uint128_t uint128_t;
 #endif
 #define VIVA_TO_STRING_IMPL(x) #x
 #define VIVA_TO_STRING(x) VIVA_TO_STRING_IMPL(x)
 #define VIVA_CONCAT_IMPL(x, y) x##y
 #define VIVA_CONCAT(x, y) VIVA_CONCAT_IMPL(x, y)
+
 union VIVA_ANY {
-	void* void_ptr_type;
-	char* char_ptr_type;
+	void *void_ptr_type;
+	char *char_ptr_type;
 	bool boolean_type;
 	char char_type;
 	signed char signed_char_type;
@@ -142,7 +164,7 @@ union VIVA_ANY {
 	int128_t int128_type;
 	uint128_t uint128_type;
 #endif
-}Any,any;
+} Any, any;
 #ifdef __cplusplus
 }
 #endif

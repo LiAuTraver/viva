@@ -25,7 +25,7 @@ extern "C" {
 #define VIVA_RUNTIME_DEBUG_RAISE (void *)0;
 #endif
 #elifdef _WIN32
-#define VIVA_RUNTIME_DEBUG_RAISE __debugbreak();
+#define VIVA_RUNTIME_DEBUG_RAISE VIVA_DEBUG_SIGTRAP();
 #endif
 #define VIVA_PRINT_ERROR_MSG_IMPL_SINGLE(x) \
 		fprintf(stderr,"in file \"%s\" function \'%s\' line %d:\nConstraints not satisfied:\n\tExpected the value of \'%s\' to be true.\n", __FILE__,__func__,__LINE__,#x);

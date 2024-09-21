@@ -9,8 +9,8 @@ add_executable(viva main.c
 	 include/internal/result_t.h
 	 include/internal/contract.h
 )
-add_executable(viva_test test.c
-	 include/test.h
+add_executable(viva_test vtest.c
+	 include/vtest.h
 	 include/viva.h
 	 include/internal/fmt.h
 	 include/internal/predef.h
