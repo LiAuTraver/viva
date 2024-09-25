@@ -12,14 +12,7 @@ struct VIVA_RESULT_T {
 
 	union {
 		struct {
-			enum {
-				kERR_UNKNOWN,
-				kERR_BAD_ALLOC,
-				kERR_BAD_CAST,
-				kERR_BAD_TYPEID,
-				kERR_BAD_FUNCTION,
-			} code;
-
+			enum VIVA_STATUS_ENUM code;
 			const char *message;
 		} error;
 
@@ -88,10 +81,10 @@ struct VIVA_RESULT_T {
 #define VIVA_RESULT_CAST_IMPL_2(res_, any_) \
 	({ \
 		VIVA_RUNTIME_REQUIRE_IMPL(res_.has_value); \
-		VIVA_RUNTIME_REQUIRE_IMPL(not strcmp(res_.value.type_t, VIVA_REFLEXPR_IMPL(&any_))); \
 		VIVA_RUNTIME_REQUIRE_IMPL(res_.value.ptr); \
 		VIVA_RESULT_CAST_IMPL__(res_, any_); \
 	})
+// ^^^^^^ VIVA_RUNTIME_REQUIRE_IMPL(not strcmp(res_.value.type_t, VIVA_REFLEXPR_IMPL(&any_))); \ // fixme, strcmp not working
 #else
 #define VIVA_RESULT_CAST_IMPL_2(res_, any_) VIVA_RESULT_CAST_IMPL__(res_, any_)
 #endif

@@ -7,7 +7,7 @@ extern "C" {
 
 #pragma region reflexpr
 	// default triggers an error.
-#define VIVA_REFLEXPR_IMPL(x) generic((x), \
+#define VIVA_REFLEXPR_IMPL(x) _Generic((x), \
 		void *: "void *", \
 		bool: "bool", \
 		bool*: "bool *", \
@@ -43,7 +43,7 @@ extern "C" {
 	 *  @see http://www.robertgamble.net/2012/01/c11-generic-selections.html
 	 */
 #pragma region print functions
-#define VIVA_PRINTF_DEC_FORMAT_IMPL(x) generic((x), \
+#define VIVA_PRINTF_DEC_FORMAT_IMPL(x) _Generic((x), \
 		void *: "%p", \
 		bool: "%d", \
 		char: "%c", \

@@ -7,15 +7,7 @@
 extern "C" {
 #endif
 #pragma region contracts
-#if VIVA_TEST_FRAMEWORK_ENABLED
-#define VIVA_ADD_TOTAL() (++total)
-#define VIVA_ADD_PASSED() (++passed)
-#define VIVA_ADD_FAILED() (++failed)
-#else
-#define VIVA_ADD_TOTAL()
-#define VIVA_ADD_PASSED()
-#define VIVA_ADD_FAILED()
-#endif
+
 #define VIVA_AMBIGUOUS_ELSE_BLOCKER \
 	switch (0) case 0: default:
 #ifdef __linux__
@@ -46,18 +38,19 @@ extern "C" {
 #define VIVA_PRINT_ERROR_MSG_IMPL(_1, _2, N, ...) VIVA_PRINT_ERROR_MSG_IMPL_##N
 #define VIVA_RUNTIME_REQUIRE_IMPL_EQUAL(x,y) \
 	VIVA_AMBIGUOUS_ELSE_BLOCKER \
-		if((x) == (y)) VIVA_ADD_PASSED(); else { VIVA_ADD_FAILED(); VIVA_PRINT_ERROR_MSG(x, y) }
+		if((x) == (y)); else { VIVA_PRINT_ERROR_MSG(x, y) }
 #define VIVA_RUNTIME_REQUIRE_IMPL_SATISFY(x) \
 	VIVA_AMBIGUOUS_ELSE_BLOCKER \
-		if(x) VIVA_ADD_PASSED(); else { VIVA_ADD_FAILED(); VIVA_PRINT_ERROR_MSG(x) }
+		if(x); else { VIVA_PRINT_ERROR_MSG(x) }
 #define VIVA_RUNTIME_REQUIRE_IMPL_2(x, y) VIVA_RUNTIME_REQUIRE_IMPL_EQUAL(x, y)
 #define VIVA_RUNTIME_REQUIRE_IMPL_1(x) VIVA_RUNTIME_REQUIRE_IMPL_SATISFY(x)
+#if VIVA_DEBUG_ENABLED
 #define VIVA_RUNTIME_REQUIRE_IMPL(...) \
-	do { \
-		VIVA__VFUNC(VIVA_RUNTIME_REQUIRE_IMPL, __VA_ARGS__) \
-		VIVA_ADD_TOTAL(); \
-	} while (false);
-
+		VIVA__VFUNC(VIVA_RUNTIME_REQUIRE_IMPL, __VA_ARGS__)
+#else
+// if debug is disabled, do nothing.
+#define VIVA_RUNTIME_REQUIRE_IMPL(...)
+#endif
 #pragma endregion
 #ifdef __cplusplus
 }
