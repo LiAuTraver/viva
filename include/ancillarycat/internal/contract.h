@@ -48,7 +48,7 @@ extern "C" {
 #define VIVA_RUNTIME_REQUIRE_IMPL(...) \
 		VIVA__VFUNC(VIVA_RUNTIME_REQUIRE_IMPL, __VA_ARGS__)
 #else
-// if debug is disabled, do nothing.
+// if debug is turned off, do nothing.
 #define VIVA_RUNTIME_REQUIRE_IMPL(...)
 #endif
 #pragma endregion

@@ -6,5 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "include/ancillarycat/viva.h"
-int main(void) {
+
+int main() {
+	return 0;
 }

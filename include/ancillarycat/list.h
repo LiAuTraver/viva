@@ -1,10 +1,17 @@
+/**
+ * @file list.h
+ * @addtogroup viva_cstd
+ * @brief A simple list implementation.
+ * @note This is a simple list implementation, it is not thread-safe.
+ * <br> This implementation uses
+ * <a href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/sal-annotations?view=msvc-170">sal annotation</a>
+ * @author liautraver
+ * @date 2024-09-26
+ */
 #pragma once
-
 #include <stdlib.h>
 #include "viva.h"
-#ifdef VIVA_TEST_FRAMEWORK_ENABLED
-#include "vtest.h"
-#endif
+
 #define _Ret_maybe_result(expr) // nothing
 #if __has_include(<sal.h>)
 #include <sal.h>
@@ -12,48 +19,144 @@
 #define _In_
 #define _Out_
 #define _Inout_
+#define _Ret_maybenull_
+#define _Ret_maybe_result(expr) // nothing
 #endif
-struct list_node;
 
+/**
+ * @brief The header of the list.
+ * @param head The first node of the list.
+ * @note The head itself is not a node and doesn't contain data.
+ */
 struct list_header;
 
+/**
+ * @brief The node of the list.
+ * @param data The data stored in the node.
+ * @param next The next node in the list.
+ */
+struct list_node;
+/**
+ * @brief Create a list.
+ * @param data to be stored in the list.
+ * @return A pointer to the list header, wrapped in a result_t.
+ */
 static _Ret_maybe_result(struct list_header *) _Ret_notnull_
-result_t viva_cstd_impl_list_create(_In_ const int);
+result_t viva_cstd_impl_list_create(_In_ const int data);
 
+/**
+ * @brief Create an empty list header.
+ * @return A pointer to the list header(maybe null).
+ */
 static _Ret_maybenull_
 struct list_header *viva_cstd_impl_list_header_empty();
 
-static _Ret_maybenull_ struct list_node *viva_cstd_impl_list_create_list_node_impl(_In_ const int);
+/**
+ * @brief Create a list node.
+ * @param data to be stored in the list node.
+ * @return A pointer to the list node(maybe null).
+ */
+static _Ret_maybenull_ struct list_node *viva_cstd_impl_list_create_list_node_impl(_In_ const int data);
 
+/**
+ * @brief Create a list node.
+ * @param data to be stored in the list node.
+ * @return A pointer to the list node, wrapped in a result_t.
+ */
 static _Ret_maybe_result(struct list_node *) _Ret_notnull_
-result_t viva_cstd_impl_list_create_list_node(_In_ const int);
+result_t viva_cstd_impl_list_create_list_node(_In_ const int data);
 
-static size_t viva_cstd_impl_list_size(_In_ const struct list_header *const);
+/**
+ * @brief Get the size of the list.
+ * @param list_header to be checked.
+ * @return The size of the list.
+ */
+static size_t viva_cstd_impl_list_size(_In_ const struct list_header *const list_header);
 
-static bool viva_cstd_impl_list_is_empty(_In_ const struct list_header *const);
+/**
+ * @brief Check if the list is empty.
+ * @param list_header to be checked.
+ * @return True if the list is empty, false otherwise.
+ */
+static bool viva_cstd_impl_list_is_empty(_In_ const struct list_header *const list_header);
 
-static status_t viva_cstd_impl_list_push_front(_Inout_ struct list_header *const list_header, _In_ const int);
+/**
+ * @brief Push an element to the front of the list.
+ * @param list_header to be modified.
+ * @param data to be stored in the list.
+ * @return Status of the operation.
+ */
+static status_t viva_cstd_impl_list_push_front(_Inout_ struct list_header *const list_header, _In_ const int data);
 
-static status_t viva_cstd_impl_list_push_back(_Inout_ struct list_header *const, _In_ const int);
+/**
+ * @brief Push an element to the back of the list.
+ * @param list_header to be modified.
+ * @param data to be stored in the list.
+ * @return Status of the operation.
+ */
+static status_t viva_cstd_impl_list_push_back(_Inout_ struct list_header *const list_header, _In_ const int data);
 
-static status_t viva_cstd_impl_list_insert_after(_In_ struct list_node *const, _In_ const int);
+/**
+ * @brief Insert an element after a node.
+ * @param node to be inserted after.
+ * @param data to be stored in the list.
+ * @return Status of the operation.
+ */
+static status_t viva_cstd_impl_list_insert_after(_In_ struct list_node *const node, _In_ const int data);
 
-static status_t viva_cstd_impl_list_erase_if(_Inout_ struct list_header *const, _In_ const int);
+/**
+ * @brief Erase an element from the list.
+ * @param list_header to be modified.
+ * @param data to be erased from the list.
+ * @return Status of the operation.
+ */
+static status_t viva_cstd_impl_list_erase_if(_Inout_ struct list_header *const list_header, _In_ const int data);
 
-static status_t viva_cstd_impl_list_drop(_In_ struct list_header *const);
+/**
+ * @brief Drop the last element from the list.
+ * @param list_header to be modified.
+ * @return Status of the operation.
+ */
+static status_t viva_cstd_impl_list_drop(_In_ struct list_header *const list_header);
 
-static status_t viva_cstd_impl_list_pop_front(_Inout_ struct list_header *const);
+/**
+ * @brief Pop the first element from the list.
+ * @param list_header to be modified.
+ * @return Status of the operation.
+ */
+static status_t viva_cstd_impl_list_pop_front(_Inout_ struct list_header *const list_header);
 
-static void viva_cstd_impl_list_clear(_Inout_ struct list_header *const);
+/**
+ * @brief Clear the list.
+ * @param list_header will not be freed, the nodes will be freed.
+ */
+static void viva_cstd_impl_list_clear(_Inout_ struct list_header *const list_header);
 
-static void viva_cstd_impl_list_free(_Inout_ struct list_header *const);
+/**
+ * @brief Free the list.
+ * @param list_header The header will be freed and set to nullptr.
+ */
+static void viva_cstd_impl_list_free(_Inout_ void ** const list_header);
 
-static void viva_cstd_impl_list_unique(_Inout_ const struct list_header *const);
+/**
+ * @brief Remove duplicates from the list.
+ * @param list_header to be modified.
+ */
+static void viva_cstd_impl_list_unique(_Inout_ const struct list_header *const list_header);
 
-static void viva_cstd_impl_list_reverse(_Inout_ struct list_header *const);
+/**
+ * @brief Reverse the list.
+ * @param list_header to be reversed.
+ */
+static void viva_cstd_impl_list_reverse(_Inout_ struct list_header *const list_header);
 
+/**
+ * @brief Get the end of the list.
+ * @param list_header to be checked.
+ * @return The end of the list.
+ */
 static _Ret_maybenull_
-struct list_node *viva_cstd_impl_list_end(_In_ const struct list_header *const);
+struct list_node *viva_cstd_impl_list_end(_In_ const struct list_header *const list_header);
 
 static void *alloc_fwd(_In_ const size_t);
 
@@ -69,25 +172,44 @@ struct list_header {
 
 #pragma pack(push, 1)
 struct {
+	//! @copydoc viva_cstd_impl_list_create
 	typeof(viva_cstd_impl_list_create) *create;
+	//! @copydoc viva_cstd_impl_list_header_empty
 	typeof(viva_cstd_impl_list_header_empty) *empty;
+	//! @copydoc viva_cstd_impl_list_header_empty
+	typeof(viva_cstd_impl_list_header_empty) *empty_list;
+	//! @copydoc viva_cstd_impl_list_create_list_node
 	typeof(viva_cstd_impl_list_create_list_node) *create_list_node;
+	//! @copydoc viva_cstd_impl_list_size
 	typeof(viva_cstd_impl_list_size) *size;
+	//! @copydoc viva_cstd_impl_list_is_empty
 	typeof(viva_cstd_impl_list_is_empty) *is_empty;
+	//! @copydoc viva_cstd_impl_list_push_front
 	typeof(viva_cstd_impl_list_push_front) *push_front;
+	//! @copydoc viva_cstd_impl_list_push_back
 	typeof(viva_cstd_impl_list_push_back) *push_back;
+	//! @copydoc viva_cstd_impl_list_insert_after
 	typeof(viva_cstd_impl_list_insert_after) *insert_after;
+	//! @copydoc viva_cstd_impl_list_erase_if
 	typeof(viva_cstd_impl_list_erase_if) *erase_if;
+	//! @copydoc viva_cstd_impl_list_drop
 	typeof(viva_cstd_impl_list_drop) *drop;
+	//! @copydoc viva_cstd_impl_list_pop_front
 	typeof(viva_cstd_impl_list_pop_front) *pop_front;
+	//! @copydoc viva_cstd_impl_list_clear
 	typeof(viva_cstd_impl_list_clear) *clear;
+	//! @copydoc viva_cstd_impl_list_free
 	typeof(viva_cstd_impl_list_free) *free;
+	//! @copydoc viva_cstd_impl_list_unique
 	typeof(viva_cstd_impl_list_unique) *unique;
+	//! @copydoc viva_cstd_impl_list_reverse
 	typeof(viva_cstd_impl_list_reverse) *reverse;
+	//! @copydoc viva_cstd_impl_list_end
 	typeof(viva_cstd_impl_list_end) *end;
 } static List = {
 	.create = viva_cstd_impl_list_create,
 	.empty = viva_cstd_impl_list_header_empty,
+	.empty_list = viva_cstd_impl_list_header_empty,
 	.create_list_node = viva_cstd_impl_list_create_list_node,
 	.size = viva_cstd_impl_list_size,
 	.is_empty = viva_cstd_impl_list_is_empty,
@@ -145,7 +267,10 @@ inline status_t viva_cstd_impl_list_push_back(struct list_header *const list_hea
 }
 
 inline struct list_node *viva_cstd_impl_list_create_list_node_impl(const int data) {
-	return alloc_fwd(sizeof(struct list_node));
+	val node = (struct list_node *) alloc_fwd(sizeof(struct list_node));
+	node->data = data;
+	node->next = nullptr;
+	return node;
 }
 
 inline result_t viva_cstd_impl_list_create_list_node(const int data) {
@@ -261,11 +386,10 @@ inline void viva_cstd_impl_list_clear(struct list_header *const list_header) {
 	list_header->head = nullptr;
 }
 
-inline void viva_cstd_impl_list_free(struct list_header *const list_header) {
-	viva_cstd_impl_list_clear(list_header);
-	val ptr = (struct list_header **) &list_header;
-	free(list_header);
-	*ptr = nullptr;
+inline void viva_cstd_impl_list_free(void** const list_header) {
+	viva_cstd_impl_list_clear(*list_header);
+	free(*list_header);
+	*list_header = nullptr;
 }
 
 inline void viva_cstd_impl_list_unique(const struct list_header *const list_header) {
@@ -287,20 +411,18 @@ inline void viva_cstd_impl_list_reverse(struct list_header *const list_header) {
 			return;
 		case 2:
 			// todo: impl a swap function
-			return;
-		case 3:
+			// return;
 		default:
 			break;
 	}
 	val original_end_node = viva_cstd_impl_list_end(list_header);
-	var before_new_end = original_end_node;
-	for (val current = list_header->head; list_header->head != original_end_node; before_new_end = current) {
-		before_new_end->next = current;
-		list_header->head = current->next;
-		// current->next = original_end_node->next; // nullptr
+	struct list_node *current;
+	while (list_header->head != original_end_node) {
+		current = list_header->head;
+		list_header->head = list_header->head->next;
+		current->next = original_end_node->next;
+		original_end_node->next = current;
 	}
-	// now the last node is `before_new_end`
-	before_new_end->next = nullptr;
 }
 
 inline struct list_node *viva_cstd_impl_list_end(const struct list_header *const list_header) {
@@ -308,7 +430,7 @@ inline struct list_node *viva_cstd_impl_list_end(const struct list_header *const
 		return nullptr;
 	var current = list_header->head;
 	if (current == nullptr)
-        return current;
+		return current;
 	while (current->next)
 		current = current->next;
 	return current;
