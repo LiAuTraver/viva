@@ -24,7 +24,12 @@ typedef __uint128_t uint128_t;
 #define VIVA_CONCAT(...) VIVA_CONCAT_IMPL(__VA_ARGS__)
 #define VIVA_STRINGIFY_IMPL(...) #__VA_ARGS__
 #define VIVA_STRINGIFY(...) VIVA_STRINGIFY_IMPL(__VA_ARGS__)
-
+// get compiler's counter
+#if !defined(__COUNTER__) || __COUNTER__ <= 100ULL
+#define VIVA_COUNTER __COUNTER__ // + 1000ULL // BUG, fixme
+#else
+#define VIVA_COUNTER __COUNTER__
+#endif
 #define VIVA_ANY_DEFAULT_VALUE_() \
 	.void_ptr_type = nullptr, \
 	.char_ptr_type = nullptr, \

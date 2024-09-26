@@ -12,15 +12,9 @@
 // enable the test framework
 #define VIVA_TEST_FRAMEWORK_ENABLED 1
 #define VIVA_DEBUG_ENABLED 1
-#include "viva.h"
+#include "internal/viva_internal_export.h"
 #define VIVA_UNUSED(x)
-// get compiler's counter
-#if !defined(__COUNTER__) || __COUNTER__ <= 100ULL
-#define VIVA_COUNTER __COUNTER__ // + 1000ULL // BUG, fixme
-#else
-#define VIVA_COUNTER __COUNTER__
-#endif
-#define VIVA_TEST_DEFAULT_CTOR 1000
+#define VIVA_TEST_DEFAULT_CTOR_COUNTER 1000
 #define ADD_TOTAL() (total++)
 #define ADD_FAILED() (failed++)
 #define VIVA_TEST_SETUP() \
@@ -30,7 +24,7 @@
         fprintf(stderr,"Signal %d received.\n", sig); \
         failed++; \
     } \
-    __attribute__((constructor(VIVA_TEST_DEFAULT_CTOR))) void setup() { \
+    __attribute__((constructor(VIVA_TEST_DEFAULT_CTOR_COUNTER))) void setup() { \
         fprintf(stdout,"Running tests...\n"); \
     } \
     __attribute__((destructor)) void finish() { \
@@ -46,13 +40,9 @@
     } \
     int main(int,char**){/* nothing */}
 
-// Helper macros to expand __COUNTER__
-#define EXPAND_COUNTER_HELPER(test, underscore, counter) test##underscore##counter
-#define EXPAND_COUNTER(counter) EXPAND_COUNTER_HELPER(test, _, counter)
-
 // Main macro definitions
-#define VIVA_TEST_IMPL_ADD_COUNTER(counter) \
-    __attribute__((constructor(counter + VIVA_TEST_DEFAULT_CTOR))) void EXPAND_COUNTER(counter)()
+#define VIVA_TEST_UNIQUE_FUNC(counter) \
+    __attribute__((constructor(counter + VIVA_TEST_DEFAULT_CTOR_COUNTER))) void EXPAND_COUNTER(test,counter)()
 
 #define VIVA_TEST_IMPL_0() \
 VIVA_TEST_IMPL_1(unnamed)
@@ -61,12 +51,12 @@ VIVA_TEST_IMPL_1(unnamed)
 VIVA_TEST_IMPL_1(name##_##sub_name)
 
 #define VIVA_TEST_IMPL_1(name) \
-    VIVA_TEST_IMPL_ADD_COUNTER(VIVA_COUNTER) { \
+    VIVA_TEST_UNIQUE_FUNC(VIVA_COUNTER) { \
         fprintf(stdout,"Running test \'%s\'\n", #name); \
         fflush(stdout); \
         ADD_TOTAL(); \
     } \
-    VIVA_TEST_IMPL_ADD_COUNTER(VIVA_COUNTER)
+    VIVA_TEST_UNIQUE_FUNC(VIVA_COUNTER)
     
 #define VIVA_TEST(...) VIVA__VFUNC(VIVA_TEST_IMPL, ##__VA_ARGS__)
 #define VIVA_EXPECT_EQ(x,y) \

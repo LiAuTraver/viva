@@ -1,5 +1,5 @@
 /**
- * @file list.h
+* @file list.h
  * @addtogroup viva_cstd
  * @brief A simple list implementation.
  * @note This is a simple list implementation, it is not thread-safe.
@@ -10,7 +10,7 @@
  */
 #pragma once
 #include <stdlib.h>
-#include "viva.h"
+#include "internal/viva_internal_export.h"
 
 #define _Ret_maybe_result(expr) // nothing
 #if __has_include(<sal.h>)
@@ -39,10 +39,10 @@ struct list_node;
 /**
  * @brief Create a list.
  * @param data to be stored in the list.
- * @return A pointer to the list header, wrapped in a result_t.
+ * @return A pointer to the list header, wrapped in a viva_result_t.
  */
 static _Ret_maybe_result(struct list_header *) _Ret_notnull_
-result_t viva_cstd_impl_list_create(_In_ const int data);
+viva_result_t viva_cstd_impl_list_create(_In_ const int data);
 
 /**
  * @brief Create an empty list header.
@@ -61,10 +61,10 @@ static _Ret_maybenull_ struct list_node *viva_cstd_impl_list_create_list_node_im
 /**
  * @brief Create a list node.
  * @param data to be stored in the list node.
- * @return A pointer to the list node, wrapped in a result_t.
+ * @return A pointer to the list node, wrapped in a viva_result_t.
  */
 static _Ret_maybe_result(struct list_node *) _Ret_notnull_
-result_t viva_cstd_impl_list_create_list_node(_In_ const int data);
+viva_result_t viva_cstd_impl_list_create_list_node(_In_ const int data);
 
 /**
  * @brief Get the size of the list.
@@ -86,7 +86,7 @@ static bool viva_cstd_impl_list_is_empty(_In_ const struct list_header *const li
  * @param data to be stored in the list.
  * @return Status of the operation.
  */
-static status_t viva_cstd_impl_list_push_front(_Inout_ struct list_header *const list_header, _In_ const int data);
+static viva_status_t viva_cstd_impl_list_push_front(_Inout_ struct list_header *const list_header, _In_ const int data);
 
 /**
  * @brief Push an element to the back of the list.
@@ -94,7 +94,7 @@ static status_t viva_cstd_impl_list_push_front(_Inout_ struct list_header *const
  * @param data to be stored in the list.
  * @return Status of the operation.
  */
-static status_t viva_cstd_impl_list_push_back(_Inout_ struct list_header *const list_header, _In_ const int data);
+static viva_status_t viva_cstd_impl_list_push_back(_Inout_ struct list_header *const list_header, _In_ const int data);
 
 /**
  * @brief Insert an element after a node.
@@ -102,7 +102,7 @@ static status_t viva_cstd_impl_list_push_back(_Inout_ struct list_header *const 
  * @param data to be stored in the list.
  * @return Status of the operation.
  */
-static status_t viva_cstd_impl_list_insert_after(_In_ struct list_node *const node, _In_ const int data);
+static viva_status_t viva_cstd_impl_list_insert_after(_In_ struct list_node *const node, _In_ const int data);
 
 /**
  * @brief Erase an element from the list.
@@ -110,21 +110,21 @@ static status_t viva_cstd_impl_list_insert_after(_In_ struct list_node *const no
  * @param data to be erased from the list.
  * @return Status of the operation.
  */
-static status_t viva_cstd_impl_list_erase_if(_Inout_ struct list_header *const list_header, _In_ const int data);
+static viva_status_t viva_cstd_impl_list_erase_if(_Inout_ struct list_header *const list_header, _In_ const int data);
 
 /**
  * @brief Drop the last element from the list.
  * @param list_header to be modified.
  * @return Status of the operation.
  */
-static status_t viva_cstd_impl_list_drop(_In_ struct list_header *const list_header);
+static viva_status_t viva_cstd_impl_list_drop(_In_ struct list_header *const list_header);
 
 /**
  * @brief Pop the first element from the list.
  * @param list_header to be modified.
  * @return Status of the operation.
  */
-static status_t viva_cstd_impl_list_pop_front(_Inout_ struct list_header *const list_header);
+static viva_status_t viva_cstd_impl_list_pop_front(_Inout_ struct list_header *const list_header);
 
 /**
  * @brief Clear the list.
@@ -253,13 +253,13 @@ struct {
 #pragma pack(pop)
 
 inline struct list_node *viva_cstd_impl_list_begin(const struct list_header *const list_header) {
-	contract_assert(list_header && "List header is null.");
+	VIVA_RUNTIME_REQUIRE(list_header && "List header is null.");
 	return list_header->head;
 }
 
 inline struct list_node *viva_cstd_impl_list_find_first_if(const struct list_header
 																													 *const list_header, const int data) {
-	contract_assert(list_header && "List header is null.");
+	VIVA_RUNTIME_REQUIRE(list_header && "List header is null.");
 	for (var current = list_header->head; current; current = current->next)
 		if (current->data == data)
 			return current;
@@ -270,29 +270,29 @@ inline void *alloc_fwd(_In_ const size_t size) {
 	return malloc(size);
 }
 
-inline result_t viva_cstd_impl_list_create(const int data) {
+inline viva_result_t viva_cstd_impl_list_create(const int data) {
 	auto maybe_node = viva_cstd_impl_list_create_list_node_impl(data);
 	if (maybe_node == nullptr)
 		// node allocation failed
-		return_error(
+		VIVA_RETURN_ERROR(
 		kBadAlloc,
 		"Failed to allocate memory for list node."
 	)
 	val header = viva_cstd_impl_list_header_empty();
 	if (header) {
 		header->head = maybe_node;
-		return_value_ptr(
+		VIVA_RETURN_VALUE(
 			header
 		)
 	}
 	// header allocation failed
-	return_error(
+	VIVA_RETURN_ERROR(
 		kBadAlloc,
 		"Failed to allocate memory for list header."
 	)
 }
 
-inline status_t viva_cstd_impl_list_push_back(struct list_header *const list_header, const int data) {
+inline viva_status_t viva_cstd_impl_list_push_back(struct list_header *const list_header, const int data) {
 	val maybe_node = viva_cstd_impl_list_create_list_node_impl(data);
 	if (maybe_node == nullptr)
 		return kBadAlloc;
@@ -312,16 +312,16 @@ inline struct list_node *viva_cstd_impl_list_create_list_node_impl(const int dat
 	return node;
 }
 
-inline result_t viva_cstd_impl_list_create_list_node(const int data) {
+inline viva_result_t viva_cstd_impl_list_create_list_node(const int data) {
 	auto node = viva_cstd_impl_list_create_list_node_impl(data);
 	if (node == nullptr)
-		return_error(
+		VIVA_RETURN_ERROR(
 		kBadAlloc,
 		"Failed to allocate memory for list node."
 	)
 	node->data = data;
 	node->next = nullptr;
-	return_value_ptr(
+	VIVA_RETURN_VALUE(
 		node
 	)
 }
@@ -340,7 +340,7 @@ inline bool viva_cstd_impl_list_is_empty(const struct list_header *const list_he
 	return list_header && list_header->head;
 }
 
-inline status_t viva_cstd_impl_list_push_front(struct list_header *const list_header, const int data) {
+inline viva_status_t viva_cstd_impl_list_push_front(struct list_header *const list_header, const int data) {
 	if (list_header == nullptr)
 		return kOutOfRange;
 	val maybe_node = viva_cstd_impl_list_create_list_node_impl(data);
@@ -352,7 +352,7 @@ inline status_t viva_cstd_impl_list_push_front(struct list_header *const list_he
 	return kBadAlloc;
 }
 
-inline status_t viva_cstd_impl_list_insert_after(struct list_node *const node, const int data) {
+inline viva_status_t viva_cstd_impl_list_insert_after(struct list_node *const node, const int data) {
 	if (node == nullptr)
 		return kOutOfRange;
 	struct list_node *maybe_node = viva_cstd_impl_list_create_list_node_impl(data);
@@ -364,7 +364,7 @@ inline status_t viva_cstd_impl_list_insert_after(struct list_node *const node, c
 	return kBadAlloc;
 }
 
-inline status_t viva_cstd_impl_list_erase_if(struct list_header *const list_header, const int data) {
+inline viva_status_t viva_cstd_impl_list_erase_if(struct list_header *const list_header, const int data) {
 	bool cnt = 0;
 	if (list_header == nullptr)
 		return kEmpty;
@@ -389,7 +389,7 @@ inline status_t viva_cstd_impl_list_erase_if(struct list_header *const list_head
 	return cnt ? kOkStatus : kNotFound;
 }
 
-inline status_t viva_cstd_impl_list_drop(struct list_header *const list_header) {
+inline viva_status_t viva_cstd_impl_list_drop(struct list_header *const list_header) {
 	var maybe_node_before_end = list_header->head;
 	if (maybe_node_before_end == nullptr)
 		return kEmpty;
@@ -406,7 +406,7 @@ inline status_t viva_cstd_impl_list_drop(struct list_header *const list_header) 
 	return kOkStatus;
 }
 
-inline status_t viva_cstd_impl_list_pop_front(struct list_header *const list_header) {
+inline viva_status_t viva_cstd_impl_list_pop_front(struct list_header *const list_header) {
 	if (list_header == nullptr) {
 		return kEmpty;
 	}
@@ -485,7 +485,8 @@ inline struct list_header *viva_cstd_impl_list_header_empty() {
 			lh->head = nullptr;
 			lh;
 		});
-	contract_assert(false, "Failed to allocate memory for list header.");
+	VIVA_RUNTIME_REQUIRE(false, "Failed to allocate memory for list header.");
 	__builtin_expect(false, 0);
 	return nullptr;
 }
+
