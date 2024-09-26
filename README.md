@@ -1,1 +1,1 @@
-[!image](./doc/intro/macronize_all_the_things.png)
+![image](./doc/intro/macronize_all_the_things.png)
