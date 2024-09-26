@@ -55,30 +55,30 @@ typedef __uint128_t uint128_t;
 // reduce the size of the union, for `Any` and `any` will only be used for type lookup.
 #pragma pack(push, 1)
 union {
-	const void *void_ptr_type;
-	const char *char_ptr_type;
-	const bool boolean_type;
-	const char char_type;
-	const signed char signed_char_type;
-	const unsigned char unsigned_char_type;
-	const short short_type;
-	const signed short signed_short_type;
-	const unsigned short unsigned_short_type;
-	const int int_type;
-	const signed int signed_int_type;
-	const unsigned int unsigned_int_type;
-	const long long_type;
-	const signed long signed_long_type;
-	const unsigned long unsigned_long_type;
-	const long long long_long_type;
-	const signed long long signed_long_long_type;
-	const unsigned long long unsigned_long_long_type;
-	const float float_type;
-	const double double_type;
-	const long double long_double_type;
+	void *void_ptr_type;
+	char *char_ptr_type;
+	bool boolean_type;
+	char char_type;
+	signed char signed_char_type;
+	unsigned char unsigned_char_type;
+	short short_type;
+	signed short signed_short_type;
+	unsigned short unsigned_short_type;
+	int int_type;
+	signed int signed_int_type;
+	unsigned int unsigned_int_type;
+	long long_type;
+	signed long signed_long_type;
+	unsigned long unsigned_long_type;
+	long long long_long_type;
+	signed long long signed_long_long_type;
+	unsigned long long unsigned_long_long_type;
+	float float_type;
+	double double_type;
+	long double long_double_type;
 #ifdef __SIZEOF_INT128__
-	const int128_t int128_type;
-	const uint128_t uint128_type;
+	int128_t int128_type;
+	uint128_t uint128_type;
 #endif
 } static Any = {
 			VIVA_ANY_DEFAULT_VALUE_()

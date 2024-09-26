@@ -64,6 +64,7 @@ VIVA_TEST_IMPL_1(name##_##sub_name)
     VIVA_TEST_IMPL_ADD_COUNTER(VIVA_COUNTER) { \
         fprintf(stdout,"Running test \'%s\'\n", #name); \
         fflush(stdout); \
+        ADD_TOTAL(); \
     } \
     VIVA_TEST_IMPL_ADD_COUNTER(VIVA_COUNTER)
     
@@ -76,6 +77,7 @@ VIVA_TEST_IMPL_1(name##_##sub_name)
 #ifndef VIVA_EXPORT_OFF
 #define EXPECT_EQ(x,y) VIVA_EXPECT_EQ(x,y)
 #define EXPECT_TRUE(x) VIVA_EXPECT_TRUE(x)
+#define EXPECT_NULL(x) VIVA_EXPECT_EQ(x, nullptr)
 #define TEST(...) VIVA_TEST(__VA_ARGS__)
 #define TEST_SETUP() VIVA_TEST_SETUP()
 #endif

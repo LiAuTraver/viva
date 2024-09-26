@@ -136,7 +136,7 @@ static void viva_cstd_impl_list_clear(_Inout_ struct list_header *const list_hea
  * @brief Free the list.
  * @param list_header The header will be freed and set to nullptr.
  */
-static void viva_cstd_impl_list_free(_Inout_ void ** const list_header);
+static void viva_cstd_impl_list_free(_Inout_ void **const list_header);
 
 /**
  * @brief Remove duplicates from the list.
@@ -158,6 +158,25 @@ static void viva_cstd_impl_list_reverse(_Inout_ struct list_header *const list_h
 static _Ret_maybenull_
 struct list_node *viva_cstd_impl_list_end(_In_ const struct list_header *const list_header);
 
+/**
+ * @brief Get the first node of the list.
+ * @param list_header to be checked.
+ * @return The first node of the list.
+ */
+static _Ret_maybenull_
+struct list_node *viva_cstd_impl_list_begin(_In_ const struct list_header *const list_header);
+
+/**
+ * @brief Find the first node that satisfies the condition.
+ * @param list_header to be checked.
+ * @param data to be found.
+ * @warning list_header shall not be null.
+ * @return The first node that satisfies the condition. returns nullptr if not found.
+ */
+static _Ret_maybenull_
+struct list_node *viva_cstd_impl_list_find_first_if(_In_ const struct list_header *const list_header,
+																										_In_ const int data);
+
 static void *alloc_fwd(_In_ const size_t);
 
 struct list_node {
@@ -173,7 +192,7 @@ struct list_header {
 #pragma pack(push, 1)
 struct {
 	//! @copydoc viva_cstd_impl_list_create
-	typeof(viva_cstd_impl_list_create) *create;
+	typeof(viva_cstd_impl_list_create) *create_with;
 	//! @copydoc viva_cstd_impl_list_header_empty
 	typeof(viva_cstd_impl_list_header_empty) *empty;
 	//! @copydoc viva_cstd_impl_list_header_empty
@@ -204,10 +223,14 @@ struct {
 	typeof(viva_cstd_impl_list_unique) *unique;
 	//! @copydoc viva_cstd_impl_list_reverse
 	typeof(viva_cstd_impl_list_reverse) *reverse;
+	//! @copydoc viva_cstd_impl_list_begin
+	typeof(viva_cstd_impl_list_begin) *begin;
 	//! @copydoc viva_cstd_impl_list_end
 	typeof(viva_cstd_impl_list_end) *end;
+	//! @copydoc viva_cstd_impl_list_find_first_if
+	typeof(viva_cstd_impl_list_find_first_if) *find_first_if;
 } static List = {
-	.create = viva_cstd_impl_list_create,
+	.create_with = viva_cstd_impl_list_create,
 	.empty = viva_cstd_impl_list_header_empty,
 	.empty_list = viva_cstd_impl_list_header_empty,
 	.create_list_node = viva_cstd_impl_list_create_list_node,
@@ -223,9 +246,25 @@ struct {
 	.free = viva_cstd_impl_list_free,
 	.unique = viva_cstd_impl_list_unique,
 	.reverse = viva_cstd_impl_list_reverse,
-	.end = viva_cstd_impl_list_end
+	.begin = viva_cstd_impl_list_begin,
+	.end = viva_cstd_impl_list_end,
+	.find_first_if = viva_cstd_impl_list_find_first_if
 };
 #pragma pack(pop)
+
+inline struct list_node *viva_cstd_impl_list_begin(const struct list_header *const list_header) {
+	contract_assert(list_header && "List header is null.");
+	return list_header->head;
+}
+
+inline struct list_node *viva_cstd_impl_list_find_first_if(const struct list_header
+																													 *const list_header, const int data) {
+	contract_assert(list_header && "List header is null.");
+	for (var current = list_header->head; current; current = current->next)
+		if (current->data == data)
+			return current;
+	return nullptr;
+}
 
 inline void *alloc_fwd(_In_ const size_t size) {
 	return malloc(size);
@@ -332,11 +371,14 @@ inline status_t viva_cstd_impl_list_erase_if(struct list_header *const list_head
 	if (list_header->head == nullptr)
 		return kOutOfRange;
 	var before = list_header->head;
-	while (before->next && before->next->data == data) {
-		val next = before->next;
-		before->next = before->next->next;
-		free(next);
-		cnt = 1;
+	while (before->next) {
+		if (before->next->data == data){
+			val next = before->next;
+			before->next = before->next->next;
+			free(next);
+			cnt = 1;
+		} else
+			before = before->next;
 	}
 	if (before->data == data) {
 		val next = before->next;
@@ -386,7 +428,7 @@ inline void viva_cstd_impl_list_clear(struct list_header *const list_header) {
 	list_header->head = nullptr;
 }
 
-inline void viva_cstd_impl_list_free(void** const list_header) {
+inline void viva_cstd_impl_list_free(void **const list_header) {
 	viva_cstd_impl_list_clear(*list_header);
 	free(*list_header);
 	*list_header = nullptr;

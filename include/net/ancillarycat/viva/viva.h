@@ -10,12 +10,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#pragma region includes all internal headers
 #include "internal/predef.h"
 #include "internal/fmt.h"
 #include "internal/contract.h"
+#include "internal/scan.h"
 #include "internal/result_t.h"
-#pragma endregion
 /// @note any macro that contains `IMPL` or `VIVA__` is internal and shouldn't be used directly.
 #pragma region viva export macros
 #define VIVA_PRINT(x) VIVA_PRINT_IMPL(x)
@@ -28,6 +27,9 @@ extern "C" {
 #define VIVA_RUNTIME_REQUIRE(...) VIVA_RUNTIME_REQUIRE_IMPL(__VA_ARGS__)
 #define VIVA_RESULT_CAST(...) VIVA_RESULT_CAST_IMPL(__VA_ARGS__)
 #define VIVA_REFLEXPR(x) VIVA_REFLEXPR_IMPL(x)
+#define VIVA_GET_ARGUMENT_TYPE_FOR_SCANF(...) VIVA_GET_ARGUMENT_TYPE_FOR_SCANF_IMPL(__VA_ARGS__)
+#define VIVA_GET_FROM_STDIN_RAW(...) VIVA_GET_FROM_STDIN_RAW_IMPL(__VA_ARGS__)
+
 #pragma endregion
 //////////////////////////////////////////////////////////////////////////
 /// viva_export part
@@ -50,6 +52,7 @@ typedef enum VIVA_STATUS_ENUM status_t;
 #define return_value_ptr(...) VIVA_RETURN_VALUE_PTR(__VA_ARGS__)
 #define contract_assert(...) VIVA_RUNTIME_REQUIRE(__VA_ARGS__)
 #define result_cast(...) VIVA_RESULT_CAST(__VA_ARGS__)
+#define get_from_stdin_raw(...) VIVA_GET_FROM_STDIN_RAW(__VA_ARGS__)
 #endif
 #pragma endregion
 #ifdef __cplusplus
