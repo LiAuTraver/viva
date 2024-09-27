@@ -1,5 +1,5 @@
 /**
-* @file list.h
+* @file specialized_list.h
  * @addtogroup viva_cstd
  * @brief A simple list implementation.
  * @note This is a simple list implementation, it is not thread-safe.
