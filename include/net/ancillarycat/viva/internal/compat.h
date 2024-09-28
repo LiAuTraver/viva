@@ -7,6 +7,7 @@ extern "C" {
 #include <stdint.h> // intmax_t, ptrdiff_t, size_t
 #include <stdio.h> // printf, fprintf
 #include <signal.h> // raise, SIGTRAP
+#include <stdbool.h> // bool, true, false
 
 #if __STDC_VERSION__ < 201112L
 #error "This library is required at least C11."
@@ -20,16 +21,6 @@ extern "C" {
 #define VIVA_HAS_C11
 #define VIVA_HAS_C17
 #define VIVA_HAS_C23
-#endif
-
-#ifndef VIVA_HAS_C17
-#include <stdbool.h>
-#if ! defined(__bool_true_false_are_defined)
-#define bool _Bool
-#define true 1
-#define false 0
-#endif
-// else do nothing, because C23 standardize the bool type and related keywords.
 #endif
 
 #ifndef VIVA_HAS_C23
