@@ -337,7 +337,7 @@ inline void* viva_cstd_impl_forward_list_find_first_if(void* header, bool (*pred
 		inline viva_status_t viva_cstd_impl_forward_list_unique_of_##data_type_(void* header) { \
 			if (header == nullptr) \
 				return kEmpty; \
-			for (var current = ((struct viva_forward_list_header*)header)->head; current->next; current = current->next) { \
+			for (var current = ((struct viva_forward_list_header*)header)->head; current && current->next; current = current->next) { \
 				for (var next = current; next->next;) { \
 					if (*(data_type_*)current->data_ptr == *(data_type_*)next->next->data_ptr) { \
 						var temp = next->next; \

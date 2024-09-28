@@ -15,6 +15,7 @@ int main() {
 		if (i <= 0) {
 			println("The number of node should be greater than 0.");
 			fflush(stdout);
+			continue;
 		}
 		break;
 	}
