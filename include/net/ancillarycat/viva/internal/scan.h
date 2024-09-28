@@ -94,6 +94,24 @@ static inline char viva_read_char(const char* val_str) {
 }
 
 //! Macro to get input from stdin and convert it to the appropriate type
+#define VIVA_GET_FROM_STDIN_RECURSIVE_STRING_IMPL(any_type_value_, max_size_) ({ \
+		char _str[max_size_]; \
+		while (true) { \
+				errno = 0; \
+				if (fgets(_str, sizeof(_str), stdin) == nullptr) { \
+						fprintf(stderr, "Error: failed to read input Please input data again.\n"); \
+						continue; \
+				} \
+				_str[strcspn(_str, "\r\n")] = '\0'; \
+				if (strlen(_str) == 0) { \
+						fprintf(stderr, "Error: invalid input. Please enter a valid string.\n"); \
+						continue; \
+				} \
+				break; \
+		} \
+		_str; \
+})
+
 #define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_(any_type_value_, _size_) ({ \
     char *end_ptr = nullptr; \
     typeof(any_type_value_) _any_type_value; \
@@ -109,7 +127,6 @@ static inline char viva_read_char(const char* val_str) {
             char: viva_read_char(_any_type_value_str), \
             signed char: viva_read_char(_any_type_value_str), \
             unsigned char: viva_read_char(_any_type_value_str), \
-						const char*: _any_type_value_str, \
             short: strtol(_any_type_value_str, &end_ptr, 10), \
             unsigned short: strtoul(_any_type_value_str, &end_ptr, 10), \
             int: strtol(_any_type_value_str, &end_ptr, 10), \
@@ -144,8 +161,8 @@ static inline char viva_read_char(const char* val_str) {
     _any_type_value; \
 })
 
-#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_1(any_type_value_) VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_(any_type_value_, 128)
-#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_2(any_type_value_, max_size_) VIVA_GET_FROM_STDIN_RECURSIVE_STRING_ON_STACK_IMPL(any_type_value_, max_size_)
+#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_1(any_type_value_) VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_(any_type_value_, 32)
+#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_2(any_type_value_, max_size_) VIVA_GET_FROM_STDIN_RECURSIVE_STRING_IMPL(any_type_value_, max_size_)
 #define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL(...) VIVA__VFUNC(VIVA_GET_FROM_STDIN_RECURSIVE_IMPL, __VA_ARGS__)
 #ifdef __cplusplus
 }
