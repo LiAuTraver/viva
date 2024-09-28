@@ -2,6 +2,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include <string.h>
 #include "predef.h"
 #ifdef __SIZEOF_INT128__
 #define VIVA_GET_ARGUMENT_TYPE_FOR_SCANF_IMPL(any_type_value_) _Generic((any_type_value_), \
@@ -69,33 +70,48 @@ extern "C" {
 #define VIVA_GET_FROM_STDIN_RAW_IMPL(...) VIVA__VFUNC(VIVA_GET_FROM_STDIN_RAW_IMPL, __VA_ARGS__)
 
 
-// Macro to check if the input is a valid character
-#define VIVA_CHECK_CHAR_(any_type_value_, val_str) ({ \
-    if (strlen(val_str) != 1) { \
-        fprintf(stderr, "Error: invalid input. Please enter a valid character.\n"); \
-        errno = 42; \
-    } else { \
-        any_type_value_ = (typeof(any_type_value_))val_str[0]; \
-    } \
-    any_type_value_; \
-})
+//! old solution:Macro to check if the input is a valid character
+// #define viva_read_char(any_type_value_, val_str) ({ \
+//     if (strlen(val_str) != 1) { \
+//         fprintf(stderr, "Error: invalid input. Please enter a valid character.\n"); \
+//         errno = 42; \
+//     } else { \
+//         any_type_value_ = (typeof(any_type_value_))val_str[0]; \
+//     } \
+//     any_type_value_; \
+// })
 
-// Macro to get input from stdin and convert it to the appropriate type
-#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL(any_type_value_) ({ \
-    char *end_ptr; \
+// now, instead of using a macro, we use a static inline function, which makes the size of the macro smaller
+static inline char viva_read_char(const char* val_str) {
+		char any_type_value = 0;
+		if (val_str && *(val_str + 1) != '\0') {
+				fprintf(stderr, "Error: invalid input. Please enter a valid character.\n");
+				errno = 42;
+		} else {
+				any_type_value = *val_str;
+		}
+		return any_type_value;
+}
+
+//! Macro to get input from stdin and convert it to the appropriate type
+#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_(any_type_value_, _size_) ({ \
+    char *end_ptr = nullptr; \
     typeof(any_type_value_) _any_type_value; \
     while (true) { \
         errno = 0; \
-        char _any_type_value_str[128]; \
+        char _any_type_value_str[_size_]; \
         if (fgets(_any_type_value_str, sizeof(_any_type_value_str), stdin) == nullptr) { \
             fprintf(stderr, "Error: failed to read input Please input data again.\n"); \
             continue; \
         } \
         _any_type_value_str[strcspn(_any_type_value_str, "\r\n")] = '\0'; \
         _any_type_value = _Generic((any_type_value_), \
-            char: VIVA_CHECK_CHAR_(any_type_value_, _any_type_value_str), \
-            signed char: VIVA_CHECK_CHAR_(any_type_value_, _any_type_value_str), \
-            unsigned char: VIVA_CHECK_CHAR_(any_type_value_, _any_type_value_str), \
+            char: viva_read_char(_any_type_value_str), \
+            signed char: viva_read_char(_any_type_value_str), \
+            unsigned char: viva_read_char(_any_type_value_str), \
+						const char*: _any_type_value_str, \
+            short: strtol(_any_type_value_str, &end_ptr, 10), \
+            unsigned short: strtoul(_any_type_value_str, &end_ptr, 10), \
             int: strtol(_any_type_value_str, &end_ptr, 10), \
             unsigned int: strtoul(_any_type_value_str, &end_ptr, 10), \
             long: strtol(_any_type_value_str, &end_ptr, 10), \
@@ -128,6 +144,9 @@ extern "C" {
     _any_type_value; \
 })
 
+#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_1(any_type_value_) VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_(any_type_value_, 128)
+#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL_2(any_type_value_, max_size_) VIVA_GET_FROM_STDIN_RECURSIVE_STRING_ON_STACK_IMPL(any_type_value_, max_size_)
+#define VIVA_GET_FROM_STDIN_RECURSIVE_IMPL(...) VIVA__VFUNC(VIVA_GET_FROM_STDIN_RECURSIVE_IMPL, __VA_ARGS__)
 #ifdef __cplusplus
 }
 #endif

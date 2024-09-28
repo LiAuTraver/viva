@@ -30,38 +30,11 @@ typedef __uint128_t uint128_t;
 #else
 #define VIVA_COUNTER __COUNTER__
 #endif
-#define VIVA_ANY_DEFAULT_VALUE_() \
-	.void_ptr_type = nullptr, \
-	.char_ptr_type = nullptr, \
-	.boolean_type = false, \
-	.char_type = '\0', \
-	.signed_char_type = 0, \
-	.unsigned_char_type = 0, \
-	.short_type = 0, \
-	.signed_short_type = 0, \
-	.unsigned_short_type = 0, \
-	.int_type = 0, \
-	.signed_int_type = 0, \
-	.unsigned_int_type = 0, \
-	.long_type = 0, \
-	.signed_long_type = 0, \
-	.unsigned_long_type = 0, \
-	.long_long_type = 0, \
-	.signed_long_long_type = 0, \
-	.unsigned_long_long_type = 0, \
-	.float_type = 0.0f, \
-	.double_type = 0.0, \
-	.long_double_type = 0.0L,
-
-#define VIVA_ANY_DEFAULT_VALUE_128() \
-	.int128_type = 0, \
-	.uint128_type = 0,
-
-// reduce the size of the union, for `Any` and `any` will only be used for type lookup.
+//! reduce the size of the union, for `Any` and `any` will only be used for type lookup.
 #pragma pack(push, 1)
 union {
-	void *void_ptr_type;
-	char *char_ptr_type;
+	void* void_ptr_type;
+	char* char_ptr_type;
 	bool boolean_type;
 	char char_type;
 	signed char signed_char_type;
@@ -85,18 +58,8 @@ union {
 	int128_t int128_type;
 	uint128_t uint128_type;
 #endif
-} static Any = {
-			VIVA_ANY_DEFAULT_VALUE_()
-#ifdef __SIZEOF_INT128__
-			VIVA_ANY_DEFAULT_VALUE_128()
-#endif
-		},
-		any = {
-			VIVA_ANY_DEFAULT_VALUE_()
-#ifdef __SIZEOF_INT128__
-			VIVA_ANY_DEFAULT_VALUE_128()
-#endif
-		};
+} static Any = {.void_ptr_type = nullptr},
+							 any = {.void_ptr_type = nullptr};
 #pragma pack(pop)
 
 enum VIVA_STATUS_ENUM : unsigned char {

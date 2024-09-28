@@ -11,6 +11,9 @@
 #include <signal.h>
 // enable the test framework
 #define VIVA_TEST_FRAMEWORK_ENABLED 1
+#ifdef VIVA_DEBUG_ENABLED
+#undef VIVA_DEBUG_ENABLED
+#endif
 #define VIVA_DEBUG_ENABLED 1
 #include "internal/viva_internal_export.h"
 #define VIVA_UNUSED(x)
@@ -57,8 +60,9 @@ VIVA_TEST_IMPL_1(name##_##sub_name)
         ADD_TOTAL(); \
     } \
     VIVA_TEST_UNIQUE_FUNC(VIVA_COUNTER)
-    
-#define VIVA_TEST(...) VIVA__VFUNC(VIVA_TEST_IMPL, ##__VA_ARGS__)
+
+#define VIVA_TEST(...) \
+        VIVA__VFUNC(VIVA_TEST_IMPL, ##__VA_ARGS__)
 #define VIVA_EXPECT_EQ(x,y) \
 		VIVA_RUNTIME_REQUIRE(x,y)
 #define VIVA_EXPECT_TRUE(x) \

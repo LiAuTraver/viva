@@ -41,32 +41,33 @@ extern "C" {
 
 	/**
 	 *  @see http://www.robertgamble.net/2012/01/c11-generic-selections.html
+	 *  @note has a trailing whitespace.
 	 */
 #pragma region print functions
 #define VIVA_PRINTF_DEC_FORMAT_IMPL(x) _Generic((x), \
-		void *: "%p", \
-		bool: "%d", \
-		char: "%c", \
-		signed char: "%hhd", \
-		unsigned char: "%hhu", \
-		char *: "%s", \
-		signed short: "%hd", \
-		unsigned short: "%hu", \
-		signed int: "%d", \
-		unsigned int: "%u", \
-		long int: "%ld", \
-		unsigned long int: "%lu", \
-		long long int: "%lld", \
-		unsigned long long int: "%llu", \
-		float: "%f", \
-		double: "%f", \
-		long double: "%Lf", \
-		default: "Unknown type. This macro only supports primitive types." \
+		void *: "%p ", \
+		bool: "%d ", \
+		char: "%c ", \
+		signed char: "%hhd ", \
+		unsigned char: "%hhu ", \
+		char *: "%s ", \
+		signed short: "%hd ", \
+		unsigned short: "%hu ", \
+		signed int: "%d ", \
+		unsigned int: "%u ", \
+		long int: "%ld ", \
+		unsigned long int: "%lu ", \
+		long long int: "%lld ", \
+		unsigned long long int: "%llu ", \
+		float: "%f ", \
+		double: "%f ", \
+		long double: "%Lf ", \
+		default: "Unknown type. This macro only supports primitive types. " \
 )
-#define VIVA_PRINT_IMPL(x) printf(VIVA_PRINTF_DEC_FORMAT_IMPL(x), x)
 #define VIVA_FPRINT_IMPL(file, x) fprintf(file, VIVA_PRINTF_DEC_FORMAT_IMPL(x), x)
-#define VIVA_PRINTLN_IMPL(x) printf(VIVA_PRINTF_DEC_FORMAT_IMPL(x), x), printf("\n")
+#define VIVA_PRINT_IMPL(x) VIVA_FPRINT_IMPL(stdout, x)
 #define VIVA_FPRINTLN_IMPL(file, x) fprintf(file, VIVA_PRINTF_DEC_FORMAT_IMPL(x), x), fprintf(file, "\n")
+#define VIVA_PRINTLN_IMPL(x) VIVA_FPRINTLN_IMPL(stdout, x)
 #pragma endregion
 
 #ifdef __cplusplus
