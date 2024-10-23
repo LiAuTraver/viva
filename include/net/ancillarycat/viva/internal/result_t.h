@@ -1,8 +1,6 @@
 #pragma once
 
 #include "predef.h"
-#include "fmt.h"
-#include "contract.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

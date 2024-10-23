@@ -27,6 +27,10 @@ extern "C" {
 #include <iso646.h>
 #endif
 
+#pragma push_macro("var")
+#undef var
+#pragma push_macro("val")
+#undef val
 #ifdef  VIVA_HAS_C23
 // C23 changed the usage of `auto` keyword, make it more like C++'s.
 #define var auto

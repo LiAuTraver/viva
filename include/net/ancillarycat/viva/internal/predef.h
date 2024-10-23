@@ -3,12 +3,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "variadic.h"
 #include "compat.h"
+#include "variadic.h"
 #pragma region primitive types
 #ifdef __SIZEOF_INT128__
 // only in 64-bit machine
-typedef __int128_t int128_t;
+typedef __int128_t	int128_t;
 typedef __uint128_t uint128_t;
 #endif
 
@@ -30,36 +30,44 @@ typedef __uint128_t uint128_t;
 #else
 #define VIVA_COUNTER __COUNTER__
 #endif
+
+
+#define VIVA_MAKE_LABEL_IMPL(_namespace, _prefix, _label) _namespace##_##_prefix##_##_label
+#define VIVA_LABEL(_prefix, _label) VIVA_MAKE_LABEL_IMPL(viva_internal_label, _prefix, _label)
+
+#pragma push_macro("Any")
+#undef Any
+#pragma push_macro("any")
+#undef any
 //! reduce the size of the union, for `Any` and `any` will only be used for type lookup.
 #pragma pack(push, 1)
 union {
-	void* void_ptr_type;
-	char* char_ptr_type;
-	bool boolean_type;
-	char char_type;
-	signed char signed_char_type;
-	unsigned char unsigned_char_type;
-	short short_type;
-	signed short signed_short_type;
-	unsigned short unsigned_short_type;
-	int int_type;
-	signed int signed_int_type;
-	unsigned int unsigned_int_type;
-	long long_type;
-	signed long signed_long_type;
-	unsigned long unsigned_long_type;
-	long long long_long_type;
-	signed long long signed_long_long_type;
+	void							*void_ptr_type;
+	char							*char_ptr_type;
+	bool							 boolean_type;
+	char							 char_type;
+	signed char				 signed_char_type;
+	unsigned char			 unsigned_char_type;
+	short							 short_type;
+	signed short			 signed_short_type;
+	unsigned short		 unsigned_short_type;
+	int								 int_type;
+	signed int				 signed_int_type;
+	unsigned int			 unsigned_int_type;
+	long							 long_type;
+	signed long				 signed_long_type;
+	unsigned long			 unsigned_long_type;
+	long long					 long_long_type;
+	signed long long	 signed_long_long_type;
 	unsigned long long unsigned_long_long_type;
-	float float_type;
-	double double_type;
-	long double long_double_type;
+	float							 float_type;
+	double						 double_type;
+	long double				 long_double_type;
 #ifdef __SIZEOF_INT128__
-	int128_t int128_type;
+	int128_t	int128_type;
 	uint128_t uint128_type;
 #endif
-} static Any = {.void_ptr_type = nullptr},
-							 any = {.void_ptr_type = nullptr};
+} static const Any = {.void_ptr_type = nullptr}, any = {.void_ptr_type = nullptr};
 #pragma pack(pop)
 
 enum VIVA_STATUS_ENUM : unsigned char {
@@ -74,7 +82,7 @@ enum VIVA_STATUS_ENUM : unsigned char {
 	kAccessDenied,
 	kNotFound,
 	kAlreadyExists,
-	kUnknownError = UCHAR_MAX - 1,
+	kUnknownError		= UCHAR_MAX - 1,
 	kNotImplemented = UCHAR_MAX
 };
 #pragma endregion

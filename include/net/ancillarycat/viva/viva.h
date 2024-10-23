@@ -32,7 +32,8 @@ typedef enum VIVA_STATUS_ENUM status_t;
 #define result_cast(...) VIVA_RESULT_CAST(__VA_ARGS__)
 #define is_string(x) VIVA_IS_CHAR_PTR(x)
 #define get_raw(...) VIVA_GET_FROM_STDIN_RAW(__VA_ARGS__)
-#define get_rec(x) VIVA_GET_FROM_STDIN_RECURSIVE(x)
+#define get_rec(...) VIVA_GET_FROM_STDIN_RECURSIVE(__VA_ARGS__)
+#define smart VIVA_SMART_PTR
 #endif
 #pragma endregion
 #ifdef __cplusplus
