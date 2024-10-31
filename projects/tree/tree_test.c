@@ -1,6 +1,6 @@
-#include <vtest.h>
 #include "tree.h"
-#include <viva.h>
+#include <../include/net/ancillarycat/viva/viva.h>
+#include <../include/net/ancillarycat/viva/vtest.h>
 
 TEST_SETUP()
 

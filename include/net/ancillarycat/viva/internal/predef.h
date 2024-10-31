@@ -67,7 +67,11 @@ union {
 	int128_t	int128_type;
 	uint128_t uint128_type;
 #endif
-} static const Any = {.void_ptr_type = nullptr}, any = {.void_ptr_type = nullptr};
+} static
+#ifdef __GNUC__
+const /// @note clang's typeof() works differently with GCC's typeof(), which preserves the const qualifier.
+#endif
+Any = {.void_ptr_type = nullptr}, any = {.void_ptr_type = nullptr};
 #pragma pack(pop)
 
 enum VIVA_STATUS_ENUM : unsigned char {

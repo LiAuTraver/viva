@@ -22,4 +22,5 @@ int main() {
 	val is_right_str = alloc(bool, dep);
 	is_right_str[0]	 = 0;
 	display_tree(nodes, 1, is_right_str);
+	getchar();
 }

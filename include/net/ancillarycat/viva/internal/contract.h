@@ -11,7 +11,7 @@ extern "C" {
 #define VIVA_AMBIGUOUS_ELSE_BLOCKER \
 	switch (0) case 0: default:
 #ifdef __linux__
-#if VIYA_DEBUG_ENABLED
+#if VIVA_DEBUG_ENABLED
 #define VIVA_RUNTIME_DEBUG_RAISE raise(SIGTRAP);
 #else
 #define VIVA_RUNTIME_DEBUG_RAISE (void *)0;

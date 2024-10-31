@@ -17,11 +17,11 @@ extern "C" {
 #include "internal/viva_internal_export.h"
 #pragma region viva export macros
 #ifndef VIVA_EXPORT_OFF
-typedef struct VIVA_RESULT_T result_t;
-typedef enum VIVA_STATUS_ENUM status_t;
+typedef struct VIVA_RESULT_T					result_t;
+typedef enum VIVA_STATUS_ENUM					status_t;
 #define VIVA_PRINTF_DEC_FORMAT(x) VIVA_PRINTF_DEC_FORMAT_IMPL(x)
 #define print(x) VIVA_PRINT(x)
-#define println(x) VIVA_PRINTLN(x)
+#define println(...) VIVA_PRINTLN(__VA_ARGS__)
 #define fprint(x) VIVA_FPRINT(x)
 #define fprintln(x) VIVA_FPRINTLN(x)
 #define reflexpr(x) VIVA_REFLEXPR(x)
@@ -34,6 +34,7 @@ typedef enum VIVA_STATUS_ENUM status_t;
 #define get_raw(...) VIVA_GET_FROM_STDIN_RAW(__VA_ARGS__)
 #define get_rec(...) VIVA_GET_FROM_STDIN_RECURSIVE(__VA_ARGS__)
 #define smart VIVA_SMART_PTR
+#define alloc(...) VIVA_ALLOC(__VA_ARGS__)
 #endif
 #pragma endregion
 #ifdef __cplusplus

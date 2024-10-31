@@ -11,7 +11,7 @@ extern "C" {
 //! @note any macro that contains `IMPL` or `VIVA__` is internal and shouldn't be used directly.
 #pragma region viva export macros
 #define VIVA_PRINT(x) VIVA_PRINT_IMPL(x)
-#define VIVA_PRINTLN(x) VIVA_PRINTLN_IMPL(x)
+#define VIVA_PRINTLN(...) VIVA_FPRINTLN_IMPL(__VA_ARGS__)
 #define VIVA_FPRINT(file_, x) VIVA_FPRINT_IMPL(file_, x)
 #define VIVA_FPRINTLN(file_, x) VIVA_FPRINTLN_IMPL(file_, x)
 #define VIVA_RETURN_ERROR(...) VIVA_RETURN_ERROR_IMPL(__VA_ARGS__);
@@ -25,6 +25,7 @@ extern "C" {
 #define VIVA_IS_CHAR_PTR(x) VIVA_IS_CHAR_PTR_IMPL(x)
 #define VIVA_GET_FROM_STDIN_RECURSIVE(...) VIVA_GET_FROM_STDIN_RECURSIVE_IMPL(__VA_ARGS__)
 #define VIVA_SMART_PTR VIVA_AUTO_PTR_
+#define VIVA_ALLOC(...) VIVA_ALLOC_IMPL(__VA_ARGS__)
 #pragma endregion
 typedef struct VIVA_RESULT_T	viva_result_t;
 typedef enum VIVA_STATUS_ENUM viva_status_t;

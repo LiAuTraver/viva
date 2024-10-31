@@ -1,5 +1,5 @@
-#include <generic/forward_list.h>
-#include <viva.h>
+#include <net/ancillarycat/viva/generic/forward_list.h>
+#include <net/ancillarycat/viva/viva.h>
 
 void test();
 void forward_list_test();

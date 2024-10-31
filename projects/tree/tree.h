@@ -2,7 +2,11 @@
 #include <ctype.h>
 #include <iso646.h>
 #include <locale.h>
-#include <viva.h>
+#include <net/ancillarycat/viva/viva.h>
+
+#ifndef ssize_t
+#define ssize_t long long
+#endif
 
 typedef struct viva_node Node;
 static constexpr auto		 left_corner = 0x231E;
@@ -19,7 +23,7 @@ typedef struct viva_node {
 
 void display_tree(const Node *node, const ssize_t depth, bool *const is_right) { // NOLINT(misc-no-recursion)
 	if (not node)
-		return fprintf(stdout, "(null)\n"), (void)0;
+		return (void)fprintf(stdout, "(null)\n");
 
 	// Print the indentation for the current node
 	for (ssize_t i = 1ll; i < depth - 1; ++i)

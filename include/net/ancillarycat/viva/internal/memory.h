@@ -14,12 +14,13 @@ static inline void VIVA_AUTO_FREE_PTR_FUNC(void *_p) { free(*((void **)_p)); }
 
 /* __cleanup__ gives void** not void* so can't pass free directly */
 // Automatically frees a value at the end of scope.
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 #define VIVA_AUTO_PTR_ __attribute__((__cleanup__(VIVA_AUTO_FREE_PTR_FUNC)))
 #endif
 
-#define alloc(_type_, _size_) (_type_ *)malloc(sizeof(_type_) * (_size_))
-
+#define VIVA_ALLOC_IMPL_2(_type_, _size_) (_type_ *)malloc(sizeof(_type_) * (_size_))
+#define VIVA_ALLOC_IMPL_3(_type_of_elem_, _size_, _type_of_ptr_) (_type_of_ptr_)malloc(sizeof(_type_of_elem_) * (_size_))
+#define VIVA_ALLOC_IMPL(...) VIVA__VFUNC(VIVA_ALLOC_IMPL, __VA_ARGS__)
 
 #ifdef __cplusplus
 }
