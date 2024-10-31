@@ -23,82 +23,88 @@ status_t destroy(const Terminal *terminal) {
 	Console.restore(terminal);
 	return kOkStatus;
 }
+// clang-format off
+#define at_maze(y, x) 																																																 \
+		(*(((maze)->data) + (y) * (maze)->size.X + (x)))
+#define for_each_row														  																																		 \
+		for (short row = 0; row < (maze)->size.Y; row++)
+#define for_each_col 											    																																				 \
+		for (short col = 0; col < (maze)->size.X; col++)
+#define for_each                                                                                                       \
+		for_each_row                                                                                                       \
+			for_each_col
+// since we put a space between each character, we need to multiply the width by 2, height inaffected
+#define at_terminal_impl_1(maze_coord)																																								 \
+		((COORD){(maze_coord).X * 2, (maze_coord).Y})
+#define at_terminal_impl_2(maze_y, maze_x)                                                                             \
+		((COORD){(maze_x) * 2, (maze_y)})
+#define at_terminal(...) VIVA__VFUNC(at_terminal_impl, __VA_ARGS__)
+// clang-format on
+void read_sample_file(struct maze *maze) {
+	// read the maze from the file
+	maze->size		 = (COORD){20, 20};
+	maze->data		 = alloc(wchar_t, maze->size.X * maze->size.Y);
+	errno					 = 0;
+	smart var file = _wfopen(LR"(Z:\viva\projects\maze\maze.txt)", L"r");
+	if (file == nullptr) {
+		wprintf(L"Error opening file: %d\n", errno);
+		VIVA_RUNTIME_REQUIRE(false); // sigtrap
+		exit(1);
+	}
+	for_each {
+		char c;
+		while ((c = fgetc(file)) != EOF && c != '0' && c != '1')
+			;
+		at_maze(row, col) = c == '1' ? wall_char : path_char;
+	}
+}
 
-#define at_maze(x, y)                                                                                                  \
-	({                                                                                                                   \
-		VIVA_RUNTIME_REQUIRE(x >= 0 && x < (maze)->size.X && y >= 0 && y < (maze)->size.Y);                                \
-		(maze)->data[(x) * (maze)->size.Y + (y)]                                                                           \
-	})
-//
-// void read_sample_maze(wchar_t *maze) {
-// 	// read the maze from the file
-// 	errno					 = 0;
-// 	smart var file = _wfopen(LR"(Z:\viva\projects\maze\maze.txt)", L"r");
-// 	if (file == nullptr) {
-// 		wprintf(L"Error opening file: %d\n", errno);
-// 		VIVA_RUNTIME_REQUIRE(false); // sigtrap
-// 		exit(1);
-// 	}
-// 	for (int i = 0; i < 20; i++) {
-// 		for (int j = 0; j < 20; j++) {
-// 			char c;
-// 			while ((c = fgetc(file)) != EOF && c != '0' && c != '1')
-// 				;
-// 			maze[coord(i, j)] = c == '1' ? wall_char : path_char;
-// 		}
-// 	}
-// }
-//
-// void print_maze(const wchar_t *maze) {
-// 	for (int i = 0; i < 20; i++) {
-// 		for (int j = 0; j < 20; j++)
-// 			wprintf(L"%c ", maze[coord(i, j)]);
-// 		wprintf(L"\n");
-// 	}
-// }
+void print_maze(const struct maze *maze) {
+	for_each_row {
+		for_each_col wprintf(L"%c ", at_maze(row, col));
+		println()
+	}
+}
 
-void read_sample_file
+void get_maze_entrance(struct maze *maze) {
+	for_each_row {
+		if (at_maze(row, 0) == path_char) {
+			maze->entrance = (COORD){0,row};
+			break;
+		}
+	}
+	cursor.putc_at(at_terminal(maze->entrance), entrance_char);
+}
+void get_maze_exit(struct maze *maze) {
+	for_each_row {
+		if (at_maze(row, maze->size.X - 1) == path_char) {
+			maze->exit = (COORD){(short)(maze->size.X - 1),row};
+			break;
+		}
+	}
+	cursor.putc_at(at_terminal(maze->exit), exit_char);
+}
+void maze_main() {
+	static struct maze maze = {
+		.size			= {0, 0},
+		.entrance = {0, 0},
+		.exit			= {0, 0},
+		.data			= nullptr,
+	};
+	read_sample_file(&maze);
+	print_maze(&maze);
+
+	get_maze_entrance(&maze);
+	get_maze_exit(&maze);
+	cursor.set(maze.entrance);
+}
 
 int main() {
-	// 	setlocale(LC_ALL, "");
-	// 	cursor.clear_terminal();
-	// 	println();
-	// 	cursor.save();
-	//
-	// 	val start_pos = cursor.get();
-	//
-	// #define to_COORD(x, y) (COORD){.X = (start_pos.X + (x)), .Y = (start_pos.Y + (y))}
-	//
-	// 	val maze = (alloc(wchar_t, 400));
-	// 	read_sample_maze(maze);
-	// 	// print the maze
-	// 	for (int i = 0; i < 20; i++) {
-	// 		for (int j = 0; j < 20; j++) {
-	// 			cursor.putc(maze[coord(i, j)]);
-	// 			printf(" ");
-	// 		}
-	// 		printf("\n");
-	// 	}
-	//
-	// 	val		end_pos			 = cursor.get();
-	// 	COORD entrance_pos = start_pos;
-	// 	COORD out_pos			 = end_pos;
-	// 	for (int k = 0; k < 20; k++) {
-	// 		if (maze[coord(k, 0)] == path_char) {
-	// 			entrance_pos = to_COORD(k, 0);
-	// 			break;
-	// 		}
-	// 	}
-	//
-	// 	for (int k = 0; k < 20; k++) {
-	// 		if (maze[coord(k, 19)] == path_char) {
-	// 			out_pos = to_COORD(k, 19);
-	// 			break;
-	// 		}
-	// 	}
-	//
 	var init_frame = init();
-	println("input...") getwchar();
-	destroy(init_frame);
-	return 0;
+
+	maze_main();
+	getchar();
+	system("pause");
+
+	return destroy(init_frame);
 }

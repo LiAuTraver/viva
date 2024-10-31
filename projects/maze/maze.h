@@ -5,11 +5,6 @@ struct maze {
 	COORD		 entrance;
 	COORD		 exit;
 	wchar_t *data;
-} static maze = {
-	.size			= {0, 0},
-	.entrance = {0, 0},
-	.exit			= {0, 0},
-	.data			= nullptr,
 };
 constexpr val wall_char			 = L'■';
 constexpr val path_char			 = L'□';
