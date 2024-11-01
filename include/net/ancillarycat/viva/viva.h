@@ -21,10 +21,10 @@ extern "C" {
 typedef struct VIVA_RESULT_T	result_t;
 typedef enum VIVA_STATUS_ENUM status_t;
 #define VIVA_PRINTF_DEC_FORMAT(x) VIVA_PRINTF_DEC_FORMAT_IMPL(x)
-#define print(x) VIVA_PRINT(x)
+#define print(...) VIVA_PRINT(__VA_ARGS__)
 #define println(...) VIVA_PRINTLN(__VA_ARGS__)
-#define fprint(x) VIVA_FPRINT(x)
-#define fprintln(x) VIVA_FPRINTLN(x)
+#define fprint(...) VIVA_FPRINT(__VA_ARGS__)
+#define fprintln(...) VIVA_FPRINTLN(__VA_ARGS__)
 #define reflexpr(x) VIVA_REFLEXPR(x)
 #define return_error(code, msg) VIVA_RETURN_ERROR(code, msg)
 #define return_value(...) VIVA_RETURN_VALUE(__VA_ARGS__)

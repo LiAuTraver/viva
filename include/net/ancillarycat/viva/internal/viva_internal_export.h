@@ -10,7 +10,7 @@ extern "C" {
 #include "memory.h"
 //! @note any macro that contains `IMPL` or `VIVA__` is internal and shouldn't be used directly.
 #pragma region viva export macros
-#define VIVA_PRINT(x) VIVA_PRINT_IMPL(x)
+#define VIVA_PRINT(...) VIVA_PRINT_IMPL(__VA_ARGS__)
 #define VIVA_PRINTLN(...) VIVA_FPRINTLN_IMPL(__VA_ARGS__)
 #define VIVA_FPRINT(file_, x) VIVA_FPRINT_IMPL(file_, x)
 #define VIVA_FPRINTLN(file_, x) VIVA_FPRINTLN_IMPL(file_, x)

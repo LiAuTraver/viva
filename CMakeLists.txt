@@ -14,7 +14,7 @@ add_executable(viva
 set_target_properties(viva PROPERTIES LINKER_LANGUAGE C)
 
 add_executable(viva_test
-        ${CMAKE_CURRENT_SOURCE_DIR}/test/forward_list.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/forward_list_test.c
         ${VIVA_HEADERS}
 )
 set_target_properties(viva_test PROPERTIES LINKER_LANGUAGE C)
@@ -35,5 +35,16 @@ add_executable(maze
         ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/main.c
         ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/maze.c
         ${VIVA_HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/maze_stack.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/maze_stack.h
+        projects/maze/maze.h
 )
 set_target_properties(maze PROPERTIES LINKER_LANGUAGE C)
+
+add_executable(stack_test
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/stack.c
+        ${VIVA_HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/maze_stack.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/maze_stack.h
+)
+set_target_properties(stack_test PROPERTIES LINKER_LANGUAGE C)

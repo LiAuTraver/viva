@@ -1,7 +1,7 @@
 #define VIVA_DEBUG_ENABLED 1
-#include <net/ancillarycat/viva/forward_list.h>
 #include <net/ancillarycat/viva/generic/forward_list.h>
 #include <net/ancillarycat/viva/viva.h>
+#include <net/ancillarycat/viva/vtest.h>
 #include <string.h>
 
 // Macro usage
