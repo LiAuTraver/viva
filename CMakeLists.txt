@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.15)
 project(viva C)
 set(CMAKE_C_STANDARD 23)
 
@@ -14,7 +14,7 @@ add_executable(viva
 set_target_properties(viva PROPERTIES LINKER_LANGUAGE C)
 
 add_executable(viva_test
-        ${CMAKE_CURRENT_SOURCE_DIR}/test/vtest.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/forward_list.c
         ${VIVA_HEADERS}
 )
 set_target_properties(viva_test PROPERTIES LINKER_LANGUAGE C)
@@ -32,6 +32,7 @@ add_executable(tree_test
 set_target_properties(tree_test PROPERTIES LINKER_LANGUAGE C)
 
 add_executable(maze
+        ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/main.c
         ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/maze.c
         ${VIVA_HEADERS}
 )

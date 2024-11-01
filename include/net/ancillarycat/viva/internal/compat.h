@@ -4,10 +4,10 @@ extern "C" {
 #endif
 #pragma region includes and macros
 #include <limits.h>
-#include <stdint.h> // intmax_t, ptrdiff_t, size_t
-#include <stdio.h> // printf, fprintf
 #include <signal.h> // raise, SIGTRAP
 #include <stdbool.h> // bool, true, false
+#include <stdint.h> // intmax_t, ptrdiff_t, size_t
+#include <stdio.h> // printf, fprintf
 
 #if __STDC_VERSION__ < 201112L
 #error "This library is required at least C11."
@@ -31,7 +31,7 @@ extern "C" {
 #undef var
 #pragma push_macro("val")
 #undef val
-#ifdef  VIVA_HAS_C23
+#ifdef VIVA_HAS_C23
 // C23 changed the usage of `auto` keyword, make it more like C++'s.
 #define var auto
 #define val const auto
@@ -39,13 +39,13 @@ extern "C" {
 #if defined(__GNUC__) || defined(__clang__)
 // GNU and Clang support `__auto_type` as an extension before C23.
 #define var __auto_type
-#define val const __auto_type
+#define val __auto_type //! @note C forbids `const const`.
 #else
 #error "currently only support GCC and Clang. MSVC doesn't support `__auto_type`, so most code here will not work."
 #endif
 #endif
-#if ! defined (__cplusplus) && ! defined (VIVA_HAS_C23)
-// C23 standardize the those keywords.
+//! @note C23 standardize the those keywords.
+#if !defined(__cplusplus) && !defined(VIVA_HAS_C23)
 #define thread_local _Thread_local
 #define static_assert _Static_assert
 #define alignas _Alignas
@@ -56,11 +56,12 @@ extern "C" {
 #define typeof __typeof__
 #define typeof_unqual __typeof_unqual__
 #endif
+// clang-format off
 #ifndef VIVA_DEBUG_ENABLED
 #if defined(_DEBUG) || defined(DEBUG) || defined(__DEBUG) || defined(__DEBUG__)
 #define VIVA_DEBUG_ENABLED 1
 #else
-#define VIVA_DEBUG_ENABLED 0
+// #define VIVA_DEBUG_ENABLED 0 // todo: def it or not in this .h file?
 #endif
 #endif
 #if defined(__i386__) || defined(__x86_64__)
@@ -76,6 +77,7 @@ extern "C" {
 #define VIVA_DEBUG_SIGTRAP \
   __asm__ __volatile__("unimplemented")
 #endif
+// clang-format on
 #pragma endregion
 #ifdef __cplusplus
 }

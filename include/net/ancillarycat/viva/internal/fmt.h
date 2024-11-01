@@ -39,11 +39,12 @@ extern "C" {
 		default: "Unknown type. This macro only supports primitive types.")
 #pragma endregion
 
+#pragma region print functions
 /**
+ *  @brief Print a value to stdout.
  *  @see http://www.robertgamble.net/2012/01/c11-generic-selections.html
  *  @note has a trailing whitespace.
  */
-#pragma region print functions
 #define VIVA_PRINTF_DEC_FORMAT_IMPL(x)                                                                                 \
 	_Generic((x),                                                                                                        \
 		void *: "%p ",                                                                                                     \
@@ -71,7 +72,9 @@ extern "C" {
 #define VIVA_FPRINTLN_IMPL_1(x) VIVA_FPRINTLN_IMPL_2(stdout, x)
 
 #define VIVA_PRINT_IMPL(x) VIVA_FPRINT_IMPL(stdout, x);
-#define VIVA_FPRINTLN_IMPL(...) VIVA__VFUNC(VIVA_FPRINTLN_IMPL, __VA_ARGS__);
+#define VIVA_FPRINTLN_IMPL(...)                                                                                        \
+	VIVA_VFUNC_CONCAT(VIVA_FPRINTLN_IMPL, VIVA_VFUNC_ARG_COUNT(__VA_ARGS__))                                             \
+	(__VA_ARGS__) // fixme: VIVA__VFUNC(VIVA_FPRINTLN_IMPL, __VA_ARGS__) failed to interpret __VA_ARGS__.
 #pragma endregion
 
 #ifdef __cplusplus

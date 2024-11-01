@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <viva.h>
+#include <net/ancillarycat/viva/viva.h>
 #include "tree.h"
 
 

@@ -1,6 +1,8 @@
-#include "../include/net/ancillarycat/viva/vtest.h"
+#define VIVA_DEBUG_ENABLED 1
+#include <net/ancillarycat/viva/forward_list.h>
+#include <net/ancillarycat/viva/generic/forward_list.h>
+#include <net/ancillarycat/viva/viva.h>
 #include <string.h>
-#include "../include/net/ancillarycat/viva/generic/forward_list.h"
 
 // Macro usage
 #define foo(...) VIVA__VFUNC(foo, ##__VA_ARGS__)

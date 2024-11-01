@@ -16,7 +16,7 @@
 #endif
 #define VIVA_DEBUG_ENABLED 1
 #include "internal/viva_internal_export.h"
-#define VIVA_UNUSED(x)
+#define VIVA_UNUSED(x) (void)(x)
 #define VIVA_TEST_DEFAULT_CTOR_COUNTER 1000
 #define ADD_TOTAL() (total++)
 #define ADD_FAILED() (failed++)
@@ -30,21 +30,22 @@
 	signal(SIGABRT, signal_handler);                                                                                     \
 	signal(SIGTRAP, signal_handler);
 #endif
-#define VIVA_TEST_SETUP_FUNC(_expr)                                                                                                   \
-	static int											 failed = 0;                                                                                        \
-	static int											 total	= 0;                                                                                        \
-	__attribute__((destructor)) void finish();                                                                                          \
-	static void											 signal_handler(int sig) {                                                                          \
-		 fprintf(stderr, "Signal %d received in line %d, file %s. Aborting...\n", sig, __LINE__, __FILE__, __func__); \
-		 fflush(stderr);                                                                                              \
-		 failed++;                                                                                                    \
-		 finish();                                                                                                    \
-	}                                                                                                                                   \
-	__attribute__((constructor(VIVA_TEST_DEFAULT_CTOR_COUNTER))) void setup() {                                                         \
-		VIVA_TEST_REGISTER_SIGNAL_HANDLER();                                                                                              \
-		(void)_expr;                                                                                                                      \
-		fprintf(stdout, "Running tests...\n");                                                                                            \
-		fflush(stdout);                                                                                                                   \
+#define VIVA_TEST_SETUP_FUNC(_expr)                                                                                                        \
+	static int											 failed = 0;                                                                                             \
+	static int											 total	= 0;                                                                                             \
+	__attribute__((destructor)) void finish();                                                                                               \
+	static void											 signal_handler(int sig) {                                                                               \
+		 fprintf(stderr, "Signal %d received in line %d, file %s, in function %s. Aborting...\n", sig, __LINE__, __FILE__, \
+																 __func__);                                                                                                \
+		 fflush(stderr);                                                                                                   \
+		 failed++;                                                                                                         \
+		 finish();                                                                                                         \
+	}                                                                                                                                        \
+	__attribute__((constructor(VIVA_TEST_DEFAULT_CTOR_COUNTER))) void setup() {                                                              \
+		VIVA_TEST_REGISTER_SIGNAL_HANDLER();                                                                                                   \
+		VIVA_UNUSED(_expr);                                                                                                                           \
+		fprintf(stdout, "Running tests...\n");                                                                                                 \
+		fflush(stdout);                                                                                                                        \
 	}
 
 #define VIVA_TEST_SETUP_COMMON_FUNC()                                                                                  \

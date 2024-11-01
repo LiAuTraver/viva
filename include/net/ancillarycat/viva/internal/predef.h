@@ -68,8 +68,8 @@ union {
 	uint128_t uint128_type;
 #endif
 } static
-#ifdef __GNUC__
-const /// @note clang's typeof() works differently with GCC's typeof(), which preserves the const qualifier.
+#if defined(__GNUC__) && __STDC_VERSION__ >= 202112L
+const /// @note  GCC's typeof() works differently early days, which preserves the const qualifier.
 #endif
 Any = {.void_ptr_type = nullptr}, any = {.void_ptr_type = nullptr};
 #pragma pack(pop)
