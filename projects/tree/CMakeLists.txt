@@ -3,7 +3,7 @@ project(tree LANGUAGES C VERSION 1.0.0 DESCRIPTION "Tree data structure")
 
 if (NOT DEFINED CMAKE_C_STANDARD)
     set(CMAKE_C_STANDARD 11)
-endif()
+endif ()
 set(VIVA_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}../../include)
 file(GLOB_RECURSE VIVA_HEADERS ${VIVA_SOURCE}/*.h)
 

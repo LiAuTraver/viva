@@ -18,7 +18,7 @@ int main(const int argc, char **argv, const char **envp) {
 	enum choice choice;
 	void			 *data = nullptr;
 
-	val parse_callback = parse_args(argc, argv, &choice, &data);
+	val parse_callback = parse_args(argc, &argv, &choice, &data);
 	if (parse_callback != kOkStatus)
 		return fprintf(stderr, "Maze: Argument parsing failed with error code %d\n", parse_callback), parse_callback;
 

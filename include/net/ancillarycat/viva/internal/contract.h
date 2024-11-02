@@ -31,7 +31,7 @@ extern "C" {
 					"in file \"%s\" function \'%s\' line %d:\nConstraints not satisfied:\n\tExpected: %s equals to %s;\nbut "    \
 					"actually %s appears to be ",                                                                                \
 					__FILE__, __func__, __LINE__, #x, #y, #x);                                                                   \
-	VIVA_FPRINT_IMPL(stderr, x);                                                                                              \
+	VIVA_FPRINT_IMPL(stderr, x);                                                                                         \
 	fprintf(stderr, ",\n         and %s appears to be ", #y);                                                            \
 	VIVA_FPRINTLN_IMPL(stderr, y);
 #define VIVA_PRINT_ERROR_MSG_IMPL_1(x) VIVA_PRINT_ERROR_MSG_IMPL_SINGLE(x)
@@ -39,8 +39,7 @@ extern "C" {
 // flush the stderr to make sure the error message to be shown before SIGTRAP was raised.
 #define VIVA_PRINT_ERROR_MSG(...)                                                                                      \
 	do {                                                                                                                 \
-		VIVA_PRINT_ERROR_MSG_IMPL(__VA_ARGS__, 2, 1)(__VA_ARGS__)                                                         \
-		fflush(stderr);                                                                                                    \
+		VIVA_PRINT_ERROR_MSG_IMPL(__VA_ARGS__, 2, 1)(__VA_ARGS__) fflush(stderr);                                          \
 		VIVA_RUNTIME_DEBUG_RAISE                                                                                           \
 	} while (false);
 #define VIVA_PRINT_ERROR_MSG_IMPL(_1, _2, N, ...) VIVA_PRINT_ERROR_MSG_IMPL_##N

@@ -26,6 +26,8 @@ enum direction {
 status_t random_maze_init(struct maze *maze, const SHORT size, bool *square) {
 	maze->data = alloc(wchar_t, size * size);
 	maze->size = (COORD){size, size};
+	contract_assert(maze->data && (bool)"Invalid maze");
+	contract_assert(square && (bool)"Invalid square");
 
 	for_each *(square + row * size + col) = 1;
 	return kOkStatus;
@@ -38,11 +40,11 @@ status_t carve_path(const SHORT size, const COORD pos, bool *square) { // NOLINT
 
 	// Randomize directions
 	for (int i = 0; i < 4; i++) {
-		var r			= rand() % (4 - i);
-		var tempX = *(dx + i);
-		var tempY = *(dy + i);
-		*(dx + i) = *(dx + r + i);
-		*(dy + i) = *(dy + r + i);
+		var r					= rand() % (4 - i);
+		var tempX			= *(dx + i);
+		var tempY			= *(dy + i);
+		*(dx + i)			= *(dx + r + i);
+		*(dy + i)			= *(dy + r + i);
 		*(dx + r + i) = tempX;
 		*(dy + r + i) = tempY;
 	}
@@ -63,7 +65,7 @@ status_t carve_path(const SHORT size, const COORD pos, bool *square) { // NOLINT
 }
 
 void random_generate_maze(struct maze *maze, const SHORT size) {
-	var square = alloc(bool, size * size);
+	var square = alloc(bool, size *size);
 	contract_assert(square && (bool)"Invalid square");
 
 	random_maze_init(maze, size, square);
@@ -105,23 +107,45 @@ status_t console_restore() {
 	Console.restore(&Terminal);
 	return kOkStatus;
 }
-void read_sample_file(struct maze *maze) {
-	// read the maze from the file
-	maze->size		 = (COORD){20, 20};
-	maze->data		 = alloc(wchar_t, maze->size.X * maze->size.Y);
+void read_example_maze(struct maze *maze, wchar_t **data, const size_t size) {
+	maze->data = alloc(wchar_t, size * size);
+
+	contract_assert(maze->data && (bool)"Invalid maze");
+	maze->size								 = (COORD){size, size};
+	for_each at_maze(row, col) = *(*(data + row) + col * 2) == '1' ? wall_char : path_char;
+}
+status_t read_file(struct maze *maze, const char *file_path) {
+	maze->size = (COORD){20, 20};
+	maze->data = alloc(wchar_t, maze->size.X * maze->size.Y);
+	contract_assert(maze->data && (bool)"Invalid maze");
+
 	errno					 = 0;
-	smart var file = _wfopen(LR"(Z:\viva\projects\maze\maze.txt)", L"r");
-	if (not file or errno) {
-		wprintf(L"Error opening file: %d\n", errno);
-		contract_assert(false);
-		exit(1);
+	smart var file = fopen(file_path, "r");
+	if (not file or errno)
+		return wprintf(L"Error opening file: %d\n", errno), kNotFound;
+	SHORT		cnt = 0;
+	wchar_t c;
+	while ((c = fgetwc(file)) != L'\n') {
+		if (c == L'1' or c == L'0')
+			cnt++;
+		if (cnt > 50)
+			return wprintf(L"Error: The size of the maze is too large.\n"), kInvalidArgument;
 	}
-	for_each {
-		wchar_t c;
-		while ((c = fgetwc(file)) != EOF && c != L'0' && c != L'1')
+
+	if (cnt < 15)
+		return wprintf(L"Error: The size of the maze is too small.\n"), kInvalidArgument;
+
+	// move cursor to the beginning of the file, and read the data
+	fseek(file, 0, SEEK_SET);
+	maze->size = (COORD){cnt, cnt};
+	maze->data = alloc(wchar_t, maze->size.X * maze->size.Y);
+	for_each_row for_each_col {
+		while ((c = fgetwc(file)) != L'1' and c != L'0')
 			;
 		at_maze(row, col) = c == L'1' ? wall_char : path_char;
 	}
+
+	return kOkStatus;
 }
 void print_maze(const struct maze *maze) {
 	for_each_row {
@@ -150,11 +174,11 @@ void get_maze_exit(struct maze *maze) {
 void viva_maze_free_with_data_ptr(struct maze **maze) {
 	contract_assert(*maze && (bool)"Invalid maze");
 
-	free((*maze)->data);
+	// free((*maze)->data);
 	free(*maze);
 }
 status_t print_help_message() {
-	fprintf(stderr, "\nMaze: at least one argument is required\n");
+	fprintf(stderr, "Maze: at least one argument is required\n");
 	fprintf(stderr, "Usage: maze --help                  show this help message\n");
 	fprintf(stderr, "Usage: maze --example               show the example maze\n");
 	fprintf(stderr, "Usage: maze --random                generate a random maze and solve it\n");
@@ -171,18 +195,17 @@ int randint(const int min, const int max) {
 	return rand() % (max - min) + min;
 }
 
-/// @brief Parse the arguments
-status_t parse_args(const int argc, char **argv, enum choice *choice, void **data) {
+status_t parse_args(const int argc, char ***argv, enum choice *choice, void **data) {
 	if (argc == 1)
 		return print_help_message(), kInvalidArgument;
-	if (argc == 2 and strcmp(argv[1], "--help") == 0)
+	if (argc == 2 and strcmp(*(*argv + 1), "--help") == 0)
 		return print_help_message(), kOkStatus;
 
-	if (argc == 2 and strcmp(argv[1], "--example") == 0)
+	if (argc == 2 and strcmp(*(*argv + 1), "--example") == 0)
 		*choice = kExample;
-	else if ((argc == 2 or argc == 3) and strcmp(argv[1], "--random") == 0)
+	else if ((argc == 2 or argc == 3) and strcmp(*(*argv + 1), "--random") == 0)
 		*choice = kRandom;
-	else if (argc == 3 and strcmp(argv[1], "--file") == 0)
+	else if (argc == 3 and strcmp(*(*argv + 1), "--file") == 0)
 		*choice = kFile;
 	else
 		return fprintf(stderr, "Maze: Invalid arguments.\n      Use --help for more information.\n"), kInvalidArgument;
@@ -192,7 +215,7 @@ status_t parse_args(const int argc, char **argv, enum choice *choice, void **dat
 	*data									 = s_data;
 	if (*choice == kRandom) {
 		if (argc == 3) {
-			*(SHORT *)data = strtol(argv[2], nullptr, 10);
+			*(SHORT *)data = strtoull(*argv[2], nullptr, 10);
 			if (errno)
 				return fprintf(stderr, "Maze: Invalid arguments.\n      Use --help for more information.\n"), kInvalidArgument;
 			if (*(SHORT *)data < 15 or *(SHORT *)data > 50)
@@ -200,11 +223,12 @@ status_t parse_args(const int argc, char **argv, enum choice *choice, void **dat
 		}
 		if (argc == 2)
 			*(SHORT *)data = 30;
-	} else if (*choice == kFile)
-		*data = argv[2];
+	} else if (*choice == kFile) {
+		*data = alloc(char *, strlen(*(*argv + 2)) + 1);
+		strcpy(*data, *(*argv + 2));
+	}
 	return kOkStatus;
 }
-
 
 
 status_t maze_main(const enum choice choice, void *data) {
@@ -215,12 +239,13 @@ status_t maze_main(const enum choice choice, void *data) {
 	maze->data					= nullptr;
 
 	if (choice == kExample)
-		read_sample_file(maze);
+		read_example_maze(maze, example_maze, 20);
 	else if (choice == kRandom) {
 		random_generate_maze(maze, *(SHORT *)&data);
 	} else if (choice == kFile) {
-		// todo: implement file maze
-		contract_assert(false and (bool) "Not implemented yet");
+		val read_fail_callback = read_file(maze, (char *)data);
+		if (read_fail_callback != kOkStatus)
+			return read_fail_callback;
 	} else
 		contract_assert(false and (bool) "Invalid choice");
 

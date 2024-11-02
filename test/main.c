@@ -20,7 +20,7 @@ void initializeMaze(int maze[HEIGHT][WIDTH]) {
 	}
 }
 
-void carvePath(int maze[HEIGHT][WIDTH], int x, int y) {
+void carvePath(int maze[HEIGHT][WIDTH], const int x, const int y) {
 	// Directions: right, down, left, up
 	int dx[] = {2, 0, -2, 0};
 	int dy[] = {0, 2, 0, -2};

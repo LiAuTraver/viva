@@ -13,7 +13,6 @@ enum choice {
 	kFile		 = 3,
 };
 #pragma pack(pop)
-
 static constexpr val wall_char		 = L'■';
 static constexpr val path_char		 = L'□';
 static constexpr val entrance_char = L'〓';
@@ -24,7 +23,7 @@ static constexpr val left_arrow		 = L'←';
 static constexpr val right_arrow	 = L'→';
 static constexpr val up_arrow			 = L'↑';
 static constexpr val down_arrow		 = L'↓';
-
+// extern static constexpr wchar_t* example_maze[];
 /// @brief main function
 status_t maze_main(enum choice, void *) __attribute__((nonnull(2)));
 /// @brief Initializes the console
@@ -33,7 +32,7 @@ status_t console_init();
 status_t console_restore();
 int			 randint(int, int);
 /// @brief Reads the maze from the file
-void read_sample_file(struct maze *) __attribute__((nonnull(1)));
+status_t read_file(struct maze *, const char *) __attribute__((nonnull(1, 2)));
 /// @brief Prints the maze
 void print_maze(const struct maze *) __attribute__((nonnull(1)));
 /// @brief Gets the maze entrance point
@@ -51,7 +50,7 @@ status_t carve_path(SHORT, COORD, bool *) __attribute__((nonnull(3)));
 /// @brief Generates the random maze
 void random_generate_maze(struct maze *, SHORT) __attribute__((nonnull(1)));
 /// @brief Parses the arguments
-status_t parse_args(int, char **, enum choice *, void **) __attribute__((nonnull(2, 3, 4)));
+status_t parse_args(int, char ***, enum choice *, void **) __attribute__((nonnull(2, 3, 4)));
 /// @brief Finds and prints the path
 result_t find_and_print_path(const struct maze *, DWORD) __attribute__((nonnull(1)));
 /// @brief Steps in the maze
@@ -64,6 +63,8 @@ bool is_exit(const struct maze *, COORD) __attribute__((nonnull(1)));
 bool is_entrance(const struct maze *, COORD) __attribute__((nonnull(1)));
 /// @brief Performs a step in the maze
 typeof(Cursor) perform_step(const struct maze *, COORD *, struct maze_stack *) __attribute__((nonnull(1, 2, 3)));
+/// @brief Reads the example maze
+void read_example_maze(struct maze *, wchar_t **, size_t) __attribute__((nonnull(1, 2)));
 
 
 // clang-format off
@@ -92,4 +93,26 @@ typeof(Cursor) perform_step(const struct maze *, COORD *, struct maze_stack *) _
 #define for_each                                                                                                       \
 		for_each_row                                                                                                       \
 				for_each_col
+static wchar_t* example_maze[] = {
+	LR"(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)",
+	LR"(0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 1)",
+	LR"(1 1 0 1 1 1 1 1 0 0 0 0 0 0 0 0 0 1 1 1)",
+	LR"(1 0 0 1 0 1 0 1 0 1 1 1 1 1 1 0 1 1 0 1)",
+	LR"(1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1)",
+	LR"(1 0 0 1 0 1 0 1 1 1 0 1 0 1 1 1 1 1 0 1)",
+	LR"(1 0 1 1 0 1 0 1 1 0 0 0 0 0 1 0 1 1 0 1)",
+	LR"(1 0 0 0 0 1 0 1 1 1 1 1 0 1 1 0 1 1 0 1)",
+	LR"(1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1)",
+	LR"(1 1 1 1 0 1 0 1 1 1 0 1 0 1 1 0 0 1 0 1)",
+	LR"(1 0 0 1 0 1 0 1 1 1 0 1 0 1 1 0 1 1 0 1)",
+	LR"(1 0 0 1 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1)",
+	LR"(1 0 1 1 0 0 1 1 1 1 1 1 0 1 0 0 1 0 0 1)",
+	LR"(1 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 1 0 0 1)",
+	LR"(1 0 1 1 0 0 1 1 1 1 1 1 1 1 0 0 1 0 0 1)",
+	LR"(1 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1)",
+	LR"(1 0 0 0 0 0 1 0 0 1 0 1 1 1 0 1 1 0 1 1)",
+	LR"(1 0 0 0 0 0 1 0 0 0 1 0 1 1 0 1 1 0 1 1)",
+	LR"(1 0 1 1 1 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0)",
+	LR"(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)",
+};
 // clang-format on
