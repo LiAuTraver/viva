@@ -215,7 +215,7 @@ status_t parse_args(const int argc, char ***argv, enum choice *choice, void **da
 	*data									 = s_data;
 	if (*choice == kRandom) {
 		if (argc == 3) {
-			*(SHORT *)data = strtoull(*argv[2], nullptr, 10);
+			*(SHORT *)data = strtoull(*(*argv + 2), nullptr, 10);
 			if (errno)
 				return fprintf(stderr, "Maze: Invalid arguments.\n      Use --help for more information.\n"), kInvalidArgument;
 			if (*(SHORT *)data < 15 or *(SHORT *)data > 50)
