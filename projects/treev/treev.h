@@ -1,86 +1,131 @@
 #pragma once
-#include <ctype.h>
-#include <iso646.h>
-#include <locale.h>
-#include <net/ancillarycat/viva/viva.h>
+#include <errno.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#ifndef ssize_t
-#define ssize_t long long
-#endif
 
 typedef struct viva_node Node;
-static constexpr var		 left_corner = 0x231E;
-static inline void			 trim_str(char *str) __attribute__((nonnull(1)));
-static inline void			 display_tree(const Node *node, ssize_t depth, bool *is_right) __attribute__((nonnull(1, 3)));
-static inline void			 build_tree(Node **nodes, char *const *str, ssize_t *depth) __attribute__((nonnull(1, 2, 3)));
-static inline void			 terminal_init();
+
+void	 preorder_traversal(Node *) __attribute__((nonnull(1)));
+size_t split_input(char *, char **, const char *) __attribute__((nonnull(1, 2, 3)));
+Node	*current_node(Node *, char *) __attribute__((nonnull(1, 2)));
+void	 print_tree(Node *) __attribute__((nonnull(1)));
+bool	 is_unique_node(Node *, char **, size_t) __attribute__((nonnull(1, 2)));
+bool	 is_valid_node(Node *, char **, size_t, Node *) __attribute__((nonnull(1, 2, 4)));
+void	 print_intro(size_t, size_t);
+void	 print_error_cnt0(void);
+void	 add_children(char **, size_t, Node *) __attribute__((nonnull(1, 3)));
+
 
 typedef struct viva_node {
-	char							data;
-	struct viva_node *left;
-	struct viva_node *right;
+	char							*data;
+	struct viva_node **childs;
+	size_t						 child_count;
 } Node;
 
-void display_tree(const Node *node, const ssize_t depth, bool *const is_right) { // NOLINT(misc-no-recursion)
-	if (not node)
-		return (void)fprintf(stdout, "(null)\n");
+inline size_t split_input(char *str, char **tokens, const char *delimitor) {
+	errno							= 0;
+	var		token_count = 0ull;
+	char *token				= strtok(str, delimitor);
 
-	// Print the indentation for the current node
-	for (ssize_t i = 1ll; i < depth - 1; ++i)
-		if (*(is_right + i))
-			fprintf(stdout, "    ");
-		else
-			fprintf(stdout, "|   ");
+	while (token && not errno) {
+		*(tokens + token_count++) = token;
+		token											= strtok(nullptr, delimitor); // Get next token
+	}
 
-	// If this isn't the root node, print the connecting line
-	if (depth > 1)
-		fprintf(stdout, "|---");
-
-	// Print the current node's data
-	fprintf(stdout, "%c\n", node->data);
-
-	if (node->left)
-		*(is_right + depth - 1 + 1) = false, display_tree(node->left, depth + 1, is_right);
-
-	if (node->right)
-		return ({
-			if (node->right->left or node->right->right) {
-				for (ssize_t i = 1ll; i < depth; ++i)
-					if (*(is_right + i))
-						fprintf(stdout, "    ");
-					else
-						fprintf(stdout, "|   ");
-				fprintf(stdout, "|\n");
-			}
-			*(is_right + depth - 1 + 1) = true, display_tree(node->right, depth + 1, is_right);
-		});
+	if (errno)
+		return 0;
+	return token_count;
 }
 
-void trim_str(char *const str) {
-	smart var new_str = alloc(char, strlen(str) + 1);
-	var				cur_ptr = new_str;
-	for (var i = 0ll; i < strlen(str); ++i)
-		if (isalnum(*(str + i)))
-			*(cur_ptr++) = *(str + i);
-	*cur_ptr = '\0';
-	memmove(str, new_str, strlen(new_str) + 1);
+inline Node *current_node(Node *cur, char *tokens) {
+	if (strcmp(cur->data, tokens) == 0)
+		return cur;
+	for (var i = 0ull; i < cur->child_count; ++i) {
+		Node *node = current_node(*(cur->childs + i), tokens);
+		if (node)
+			return node;
+	}
+	return nullptr;
 }
 
-void terminal_init() {
-	setlocale(LC_CTYPE, "");
-	fflush(stdout);
+/// @brief print function, root --> child1 --> child2 ...
+inline void print_tree(Node *root) {
+	if (not root)
+		return;
+	printf("%s", root->data);
+
+	if (root->child_count)
+		for (var i = 0ull; i < root->child_count; ++i)
+			printf(" --> %s", (*(root->childs + i))->data);
+	else
+		printf(" (no child)");
+
+	putchar('\n');
+	for (var i = 0ull; i < root->child_count; ++i)
+		print_tree(*(root->childs + i));
 }
 
-void build_tree(Node **nodes, char *const *str, ssize_t *depth) {
-	if (not strlen(*str))
-		*(nodes + 0) = nullptr;
-	// 2^dep <= strlen(chars) < 2^(dep+1)
-	// clang-format off
-	for (var i = 0; i < strlen(*str); ++i)
-		(*nodes + i)->data = *(*str + i),
-		(*nodes + i)->left = 2 * i + 1 < strlen(*str) ? *nodes + 2 * i + 1 : nullptr,
-		(*nodes + i)->right = 2 * i + 2 < strlen(*str) ? *nodes + 2 * i + 2 : nullptr;
-	// clang-format on
-	while (1ll << (*depth) <= strlen(*str))
-		++*depth;
+inline bool is_unique_node(Node *head, char **tokens, const size_t token_count) {
+	for (var i = 1ull; i < token_count; ++i) {
+		if (current_node(head, *(tokens + i))) {
+			fprintf(stderr, "Error: Duplicate Node '%s'; please input again.\n", *(tokens + i));
+			fflush(stderr);
+		}
+	}
+	return true;
+}
+inline void preorder_traversal(Node *root) {
+	if (not root)
+		return;
+	printf("%s ", root->data);
+	for (var i = 0ull; i < root->child_count; ++i)
+		preorder_traversal(*(root->childs + i));
+}
+
+inline void print_intro(const size_t max_token_count, const size_t max_input_length) {
+	println("Please input the tree in the following format: root child1 child2 ...");
+	println("Enter Ctrl+D(Linux) or Ctrl+Z(Windows) to finish input.");
+	printf("Note: the maximum number of children is %llu and the maximum length of each node is %llu.\n",
+				 max_token_count - 1, max_input_length - 1);
+}
+
+inline bool is_valid_node(Node *head, char **tokens, const size_t token_count, Node *current) {
+	if (not current) {
+		fprintf(stderr, "Error: Root Node '%s' not found in existing tree\n", *tokens);
+		fflush(stderr);
+		return true;
+	}
+	if (current->child_count) {
+		fprintf(stderr, "Error: Child Node of '%s' already exists. Ignoring\n", *tokens);
+		fflush(stderr);
+		return true;
+	}
+	return is_unique_node(head, tokens, token_count) ? false : true;
+}
+
+
+inline void print_error_cnt0(void) {
+	if (errno) {
+		fprintf(stderr, "Error: %s\n", strerror(errno)), fflush(stderr);
+		errno = 0;
+	} else {
+		fprintf(stderr, "Error: No input found\n");
+		fflush(stderr);
+	}
+}
+inline void add_children(char **tokens, const size_t token_count, Node *current) {
+	current->childs			 = alloc(Node *, token_count - 1);
+	current->child_count = token_count - 1;
+
+	for (var i = 1ull; i < token_count; ++i) {
+		// create new node
+		*(current->childs + i - 1)				 = alloc(Node, 1);
+		(*(current->childs + i - 1))->data = alloc(char, strlen(*(tokens + i)) + 1);
+		strcpy((*(current->childs + i - 1))->data, *(tokens + i));
+		(*(current->childs + i - 1))->child_count = 0;
+		(*(current->childs + i - 1))->childs			= nullptr;
+	}
 }
