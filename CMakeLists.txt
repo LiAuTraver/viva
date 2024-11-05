@@ -21,6 +21,7 @@ set_target_properties(viva_test PROPERTIES LINKER_LANGUAGE C)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/maze)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/tree)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/treev)
 
 add_executable(stack_test
         ${CMAKE_CURRENT_SOURCE_DIR}/test/stack.c

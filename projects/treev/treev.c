@@ -1,9 +1,19 @@
 #include <ctype.h>
+#include <net/ancillarycat/viva/viva.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <net/ancillarycat/viva/viva.h>
-#include "tree.h"
+#include "treev.h"
+
+void preorder_traversal(const Node *node) {
+	if (node == NULL) {
+		return;
+	}
+	fprintf(stdout, "%c", node->data);
+	preorder_traversal(node->left);
+	preorder_traversal(node->right);
+}
 
 
 int main() {
@@ -20,8 +30,6 @@ int main() {
 	build_tree(&nodes, &chars, &dep);
 	println("Depth:");
 	println(dep);
-	val is_right_str = alloc(bool, dep);
-	is_right_str[0]	 = 0;
-	display_tree(nodes, 1, is_right_str);
-	getchar();
+	println("Preorder traversal:");
+	preorder_traversal(&nodes[0]);
 }
