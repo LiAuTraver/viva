@@ -89,24 +89,7 @@ void random_generate_maze(struct maze *maze, const SHORT size) {
 }
 
 
-status_t console_init() {
-	setlocale(LC_ALL, "");
-	srand(time(nullptr));
-	// clang-format off
-	Console
-		.init (&Terminal)
-		.load (&Terminal)
-		.save (&Terminal)
-		.clear(&Terminal);
-	// clang-format on
-	return kOkStatus;
-}
-status_t console_restore() {
-	Console.sleep(5000);
-	system("pause");
-	Console.restore(&Terminal);
-	return kOkStatus;
-}
+
 void read_example_maze(struct maze *maze, wchar_t **data, const size_t size) {
 	maze->data = alloc(wchar_t, size * size);
 

@@ -1,24 +1,26 @@
 #pragma once
+#include <locale.h>
 #include <windows.h>
+#include <time.h>
 #include "../internal/viva_internal_export.h"
 #include "cursor.h"
 
 // declaratioon
-struct VIVA_TERMINAL_INSTANCE;
+struct Terminal;
 struct VIVA_CONSOLE_SINGLETON;
 static inline struct VIVA_CONSOLE_SINGLETON
-viva_cstd_impl_terminal_save_console_buffer(struct VIVA_TERMINAL_INSTANCE *);
+viva_cstd_impl_terminal_save_console_buffer(struct Terminal *);
 static inline struct VIVA_CONSOLE_SINGLETON
-viva_cstd_impl_terminal_clear_console(const struct VIVA_TERMINAL_INSTANCE *);
+viva_cstd_impl_terminal_clear_console(const struct Terminal *);
 static inline struct VIVA_CONSOLE_SINGLETON
-viva_cstd_impl_terminal_restore_console_buffer(const struct VIVA_TERMINAL_INSTANCE *);
-static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_get_console_size(struct VIVA_TERMINAL_INSTANCE *);
-static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_init(struct VIVA_TERMINAL_INSTANCE *);
-static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_load(struct VIVA_TERMINAL_INSTANCE *);
+viva_cstd_impl_terminal_restore_console_buffer(const struct Terminal *);
+static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_get_console_size(struct Terminal *);
+static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_init(struct Terminal *);
+static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_load(struct Terminal *);
 static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_sleep_win(DWORD milliseconds);
 
 // implementation
-struct VIVA_TERMINAL_INSTANCE {
+struct Terminal {
 	HANDLE		 hConsole;
 	PCHAR_INFO buffer;
 	COORD			 size;
@@ -53,21 +55,21 @@ static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_sleep_win(co
 	return Console;
 }
 
-static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_init(struct VIVA_TERMINAL_INSTANCE *terminal) {
+static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_init(struct Terminal *terminal) {
 	terminal->hConsole = nullptr;
 	terminal->buffer	 = nullptr;
 	terminal->size		 = (COORD){0, 0};
 	terminal->cursor	 = (COORD){0, 0};
 	return Console;
 }
-static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_load(struct VIVA_TERMINAL_INSTANCE *terminal) {
+static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_load(struct Terminal *terminal) {
 	terminal->hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	terminal->buffer	 = nullptr;
 	viva_cstd_impl_terminal_get_console_size(terminal);
 	return Console;
 }
 static inline struct VIVA_CONSOLE_SINGLETON
-viva_cstd_impl_terminal_get_console_size(struct VIVA_TERMINAL_INSTANCE *terminal) {
+viva_cstd_impl_terminal_get_console_size(struct Terminal *terminal) {
 	VIVA_RUNTIME_REQUIRE(terminal->hConsole != nullptr && (bool)("Invalid console handle"));
 
 	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
@@ -76,7 +78,7 @@ viva_cstd_impl_terminal_get_console_size(struct VIVA_TERMINAL_INSTANCE *terminal
 	return Console;
 }
 static inline struct VIVA_CONSOLE_SINGLETON
-viva_cstd_impl_terminal_save_console_buffer(struct VIVA_TERMINAL_INSTANCE *terminal) {
+viva_cstd_impl_terminal_save_console_buffer(struct Terminal *terminal) {
 	VIVA_RUNTIME_REQUIRE(terminal->hConsole != nullptr && (bool)("Invalid console handle"));
 	VIVA_RUNTIME_REQUIRE(terminal->size.X > 0 && terminal->size.Y > 0 && (bool)("Invalid console size"));
 
@@ -89,7 +91,7 @@ viva_cstd_impl_terminal_save_console_buffer(struct VIVA_TERMINAL_INSTANCE *termi
 	return Console;
 }
 static inline struct VIVA_CONSOLE_SINGLETON
-viva_cstd_impl_terminal_clear_console(const struct VIVA_TERMINAL_INSTANCE *terminal) {
+viva_cstd_impl_terminal_clear_console(const struct Terminal *terminal) {
 	VIVA_RUNTIME_REQUIRE(terminal->hConsole != nullptr && (bool)("Invalid console handle"));
 
 	DWORD written;
@@ -100,7 +102,7 @@ viva_cstd_impl_terminal_clear_console(const struct VIVA_TERMINAL_INSTANCE *termi
 	return Console;
 }
 static inline struct VIVA_CONSOLE_SINGLETON
-viva_cstd_impl_terminal_restore_console_buffer(const struct VIVA_TERMINAL_INSTANCE *terminal) {
+viva_cstd_impl_terminal_restore_console_buffer(const struct Terminal *terminal) {
 	VIVA_RUNTIME_REQUIRE(terminal->hConsole != nullptr && (bool)("Invalid console handle"));
 
 	SMALL_RECT writeRegion = {0, 0, terminal->size.X - 1, terminal->size.Y - 1};
@@ -109,4 +111,26 @@ viva_cstd_impl_terminal_restore_console_buffer(const struct VIVA_TERMINAL_INSTAN
 
 	Cursor.set(terminal->cursor);
 	return Console;
+}
+
+/// @brief Initializes the console
+static inline status_t console_init() {
+	setlocale(LC_ALL, "");
+	srand(time(nullptr));
+	// clang-format off
+	Console
+		.init (&Terminal)
+		.load (&Terminal)
+		.save (&Terminal)
+		.clear(&Terminal);
+	// clang-format on
+	return kOkStatus;
+}
+
+/// @brief Restores the console
+static inline status_t console_restore() {
+	Console.sleep(5000);
+	system("pause");
+	Console.restore(&Terminal);
+	return kOkStatus;
 }

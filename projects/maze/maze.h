@@ -26,11 +26,8 @@ static constexpr val down_arrow		 = L'↓';
 // extern static constexpr wchar_t* example_maze[];
 /// @brief main function
 status_t maze_main(enum choice, void *) __attribute__((nonnull(2)));
-/// @brief Initializes the console
-status_t console_init();
-/// @brief Restores the console
-status_t console_restore();
-int			 randint(int, int);
+
+int randint(int, int);
 /// @brief Reads the maze from the file
 status_t read_file(struct maze *, const char *) __attribute__((nonnull(1, 2)));
 /// @brief Prints the maze
