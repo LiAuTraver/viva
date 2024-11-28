@@ -41,7 +41,12 @@ extern "C" {
 #define var __auto_type
 #define val __auto_type //! @note C forbids `const const`.
 #else
+// must C23
+#if __STDC_VERSION__ < 202300L
 #error "currently only support GCC and Clang. MSVC doesn't support `__auto_type`, so most code here will not work."
+#endif
+#define var auto
+#define val const auto
 #endif
 #endif
 //! @note C23 standardize the those keywords.

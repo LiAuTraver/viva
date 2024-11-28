@@ -52,6 +52,7 @@ static inline int viva_cstd_threading_mutex_destroy(const struct viva_cstd_threa
 	return CloseHandle(mutex->handle);
 }
 
+#pragma pack(push, 1)
 struct {
 	struct {
 		typeof(viva_cstd_threading_thread_create) *create;
@@ -76,6 +77,6 @@ struct {
 															.unlock	 = viva_cstd_threading_mutex_unlock,
 															.destroy = viva_cstd_threading_mutex_destroy,
 														}};
-
+#pragma pack(pop)
 typedef struct viva_cstd_threading_thread_t viva_thread_t;
 typedef struct viva_cstd_threading_mutex_t	viva_mutex_t;

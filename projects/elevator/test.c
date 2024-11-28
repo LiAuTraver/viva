@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "elevator.h"
-#include "thread.h"
+#include "threading.h"
 
 typedef struct {
 	viva_mutex_t *mutex;
@@ -49,7 +49,18 @@ int main(const int argc, char **argv, const char **envp) {
 	if (init_callback != kOkStatus)
 		return fprintf(stderr, "Elevator: Console initialization failed with error code %d\n", init_callback),
 					 init_callback;
-	test_main();
+	// test_main();
+
+
+
+	ShowWindow(GetForegroundWindow(), SW_MAXIMIZE);
+	println("Press anykey to restore console");
+	getchar();
+
+	// AnimateWindow(GetForegroundWindow(), 1000, AW_BLEND);
+	// Sleep(1000);
+	ShowWindow(GetForegroundWindow(), SW_RESTORE);
+
 	val restore_callback = console_restore();
 	if (restore_callback != kOkStatus)
 		return fprintf(stderr, "Elevator: Console restore failed with error code %d\n", restore_callback), restore_callback;

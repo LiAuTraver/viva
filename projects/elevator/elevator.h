@@ -6,17 +6,73 @@
 #include <wchar.h>
 #include "string.h"
 
-enum choice {
-	kChoiceInvalid = 0,
-	kChoiceElevator,
-	kChoiceCount,
+static const char *FirstNames[] = {
+	"Amy",			"Mike",		 "Chris",	 "Tina",			"Sam",			"Laura",	"Tom",		"Jack",			 "Jill",		 "Mark",
+	"Paul",			"Anna",		 "John",	 "Ella",			"Nina",			"Luke",		"Ryan",		"Sophie",		 "Zoe",			 "Liam",
+	"Noah",			"Emma",		 "Olivia", "Ava",				"Isabella", "Mia",		"Sophia", "Charlotte", "Amelia",	 "Harper",
+	"Evelyn",		"Abigail", "Emily",	 "Elizabeth", "Mila",			"Ella",		"Avery",	"Scarlett",	 "Grace",		 "Chloe",
+	"Victoria", "Riley",	 "Aria",	 "Lily",			"Nora",			"Camila", "Hannah", "Elena",		 "Penelope", "Layla"};
+
+static const char *LastNames[] = {
+	"Smith", "Johnson",	 "Williams", "Brown",		 "Jones",		"Garcia",		"Miller",		"Davis",	 "Martinez", "Hernandez",
+	"Lopez", "Gonzalez", "Wilson",	 "Anderson", "Thomas",	"Taylor",		"Moore",		"Jackson", "Martin",	 "Lee",
+	"Perez", "Thompson", "White",		 "Harris",	 "Sanchez", "Clark",		"Ramirez",	"Lewis",	 "Robinson", "Walker",
+	"Young", "Allen",		 "King",		 "Wright",	 "Scott",		"Torres",		"Nguyen",		"Hill",		 "Flores",	 "Green",
+	"Adams", "Nelson",	 "Baker",		 "Hall",		 "Rivera",	"Campbell", "Mitchell", "Carter",	 "Roberts", "Gomez"};
+static const char *elevatorMessages[] = {"Elevator is stationary, a call is on the current floor ==> Open the door",
+																	"Elevator is stationary, a call is on an upper floor ==> Move up",
+																	"Elevator is stationary, a call is on a lower floor ==> Move down",
+																	"Elevator is stationary, passengers want to go up ==> Move up",
+																	"Elevator is stationary, passengers want to go down ==> Move down",
+																	"Elevator is stationary, overloaded ==> Close the door and warn"};
+struct _passenger_t {
+	char name[50];
+	int	 weight;
+	int	 position;
+	int	 destination;
+	int	 current_time;
+	int	 in_elevator_timestamp;
+	int	 out_elevator_timestamp;
+	int	 waiting_time;
+	int	 state;
+} ;
+
+struct _elevator_t {
+	int					total_passenger;
+	int					total_weight;
+	int					current_floor;
+	int					quarter;
+	int					stay_time;
+	int					prev_state;
+	int					current_state;
+	struct _passenger_t passenger[100];
 };
+
+struct _floor_t {
+	int					total_people;
+	struct _passenger_t up_passengers[100], down_passengers[100];
+	int					total_up, total_down;
+};
+
+typedef struct _passenger_t passenger_t;
+typedef struct _elevator_t	elevator_t;
+typedef struct _floor_t			floor_t;
+
+void show_menu();
+void init_terminal();
+void draw_elevator(const elevator_t *);
+void rules(int);
+void initialize(elevator_t *, floor_t *);
+void infomation_panel(elevator_t *, floor_t *, int, int, int);
+void passenger_info_1(elevator_t *, floor_t *, int, int, int);
+void passenger_info_2(elevator_t *, floor_t *, int, int, int);
+
 
 struct viva_cstd_terminal_rectangle;
 struct VIVA_CSTD_TERMINAL_RECT;
 
 status_t elevator_parse_args(int, char ***, enum choice *, void **);
-status_t elevator_main(enum choice, void *);
+status_t elevator_main();
 
 static inline struct viva_cstd_terminal_rectangle *viva_cstd_terminal_rect_init(COORD, COORD, WORD);
 static inline struct VIVA_CSTD_TERMINAL_RECT
