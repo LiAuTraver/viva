@@ -241,18 +241,18 @@ void passenger_info_1(elevator_t *elevator, floor_t *floors, const int level, co
 	strcpy(floors[level].up_passengers[index].name, FirstNames[choose1]);
 	strcpy(floors[level].up_passengers[index].name, LastNames[choose2]);
 	floors[level].up_passengers[index].name[first * 2 + second * 2] = '\0';
-	floors[level].up_passengers[index].position										= level;
-	floors[level].up_passengers[index].destination								= rand() % (all_height - level) + level + 1;
-	floors[level].up_passengers[index].current_time								= times;
-	floors[level].up_passengers[index].state											= 1;
+	floors[level].up_passengers[index].position											= level;
+	floors[level].up_passengers[index].destination									= rand() % (all_height - level) + level + 1;
+	floors[level].up_passengers[index].current_time									= times;
+	floors[level].up_passengers[index].state												= 1;
 	infomation_panel(elevator, floors, 1, level, index);
 	floors[level].up_passengers[index].current_time = times;
 }
 
 void passenger_info_2(elevator_t *elevator, floor_t *floors, const int level, const int index, const int times) {
 	floors[level].down_passengers[index].weight = rand() % 31 + 50;
-	int first																= rand() % 2 + 1;
-	int sceond																= rand() % 2 + 1;
+	int first																		= rand() % 2 + 1;
+	int sceond																	= rand() % 2 + 1;
 	int choose1 = 0, choose2 = 0;
 
 
@@ -274,10 +274,10 @@ void passenger_info_2(elevator_t *elevator, floor_t *floors, const int level, co
 	strcpy(floors[level].down_passengers[index].name, FirstNames[choose1]);
 	strcpy(floors[level].down_passengers[index].name, LastNames[choose2]);
 	floors[level].down_passengers[index].name[first * 2 + sceond * 2] = '\0';
-	floors[level].down_passengers[index].position													 = level;
-	floors[level].down_passengers[index].destination											 = rand() % (level - 1) + 1;
-	floors[level].down_passengers[index].current_time											 = times;
-	floors[level].down_passengers[index].state														 = 1;
+	floors[level].down_passengers[index].position											= level;
+	floors[level].down_passengers[index].destination									= rand() % (level - 1) + 1;
+	floors[level].down_passengers[index].current_time									= times;
+	floors[level].down_passengers[index].state												= 1;
 	infomation_panel(elevator, floors, 2, level, index);
 	floors[level].down_passengers[index].current_time = times;
 }
@@ -356,9 +356,9 @@ void passenger_windows(floor_t *floors, const int kinds, const int i, const int 
 
 	Console.set_color(FOREGROUND_RED | FOREGROUND_INTENSITY, 0);
 	if (kinds == 1)
-		printf("%-8s %-2dkg %2d %2d %-3ds %-3ds %-3ds", floors[i].up_passengers[j].name,
-					 floors[i].up_passengers[j].weight, floors[i].up_passengers[j].position,
-					 floors[i].up_passengers[j].destination, floors[i].up_passengers[j].current_time, -1, -1);
+		printf("%-8s %-2dkg %2d %2d %-3ds %-3ds %-3ds", floors[i].up_passengers[j].name, floors[i].up_passengers[j].weight,
+					 floors[i].up_passengers[j].position, floors[i].up_passengers[j].destination,
+					 floors[i].up_passengers[j].current_time, -1, -1);
 	else
 		printf("%-8s %-2dkg %2d %2d %-3ds %-3ds %-3ds", floors[i].down_passengers[j].name,
 					 floors[i].down_passengers[j].weight, floors[i].down_passengers[j].position,
@@ -739,12 +739,12 @@ void run_game_loop(elevator_t *elevator, floor_t *floors) {
 
 	// set font size
 	CONSOLE_FONT_INFOEX cfi;
-	cfi.cbSize = sizeof(cfi);
-	cfi.nFont = 0;
+	cfi.cbSize			 = sizeof(cfi);
+	cfi.nFont				 = 0;
 	cfi.dwFontSize.X = 0;
 	cfi.dwFontSize.Y = 24;
-	cfi.FontFamily = FF_DONTCARE;
-	cfi.FontWeight = FW_NORMAL;
+	cfi.FontFamily	 = FF_DONTCARE;
+	cfi.FontWeight	 = FW_NORMAL;
 
 	wcscpy(cfi.FaceName, L"Consolas");
 	SetCurrentConsoleFontEx(Terminal.hOutputConsole, FALSE, &cfi);

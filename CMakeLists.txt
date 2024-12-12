@@ -23,6 +23,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/maze)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/tree)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/treev)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/elevator)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/topological)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/stumgr)
 
 add_executable(stack_test
         ${CMAKE_CURRENT_SOURCE_DIR}/test/stack.c

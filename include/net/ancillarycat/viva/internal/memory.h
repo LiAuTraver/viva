@@ -10,7 +10,7 @@ extern "C" {
 //! https://stackoverflow.com/questions/34574933/a-good-and-idiomatic-way-to-use-gcc-and-clang-attribute-cleanup-and-point
 //! 	and
 //! https://github.com/systemd/systemd/blob/5809f340fd7e5e6c76e229059c50d92e1f57e8d8/src/basic/alloc-util.h#L50-L54
-static inline void VIVA_AUTO_FREE_PTR_FUNC(void *_p) { free(*((void **)_p)); }
+static inline void VIVA_AUTO_FREE_PTR_FUNC(const void *const _p_) { free(*((void **)_p_)); }
 
 /* __cleanup__ gives void** not void* so can't pass free directly */
 // Automatically frees a value at the end of scope.

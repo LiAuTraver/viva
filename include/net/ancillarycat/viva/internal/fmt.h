@@ -71,7 +71,7 @@ extern "C" {
 #define VIVA_FPRINTLN_IMPL_2(file, x) fprintf(file, VIVA_PRINTF_DEC_FORMAT_IMPL(x), (x)), fprintf(file, "\n")
 #define VIVA_FPRINTLN_IMPL_1(x) VIVA_FPRINTLN_IMPL_2(stdout, (x))
 
-#define VIVA_PRINT_IMPL(x) VIVA_FPRINT_IMPL(stdout, x);
+#define VIVA_PRINT_IMPL(x) VIVA_FPRINT_IMPL(stdout, x)
 
 // fixme: VIVA__VFUNC(VIVA_FPRINTLN_IMPL, __VA_ARGS__) failed to interpret __VA_ARGS__.
 #define VIVA_FPRINTLN_IMPL(...)                                                                                        \
