@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "net/ancillarycat/viva/viva.h"
+#include "accat/viva/viva.h"
 
 constexpr val max_size = 100;
 
@@ -64,7 +64,8 @@ int main() {
 		(*(in_degree + y))++;
 	}
 
-	if (not topological_sort(n, adjacency_matrix, adjacency_list_len, stack, topological_order, in_degree, visited, &top)) {
+	if (not topological_sort(n, adjacency_matrix, adjacency_list_len, stack, topological_order, in_degree, visited,
+													 &top)) {
 		println("Cycle detected: no topological order exists.");
 		return 0;
 	}

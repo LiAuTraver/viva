@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../include/net/ancillarycat/viva/viva.h"
+#include "../../include/accat/viva/viva.h"
 
 #if __STDC_VERSION__ >= 202000L
 constexpr val MAX_STUDENTS = 1000;
@@ -50,7 +50,7 @@ typedef struct _history {
 	struct _history_student *head;
 } History;
 
-var history = (History*)nullptr;
+var history = (History *)nullptr;
 
 int main(int argc, char **argv, char **envp) {
 	char *file_path = nullptr;
@@ -59,12 +59,12 @@ int main(int argc, char **argv, char **envp) {
 	else
 		file_path = *(argv + 1);
 	var _students_ = alloc(Student, MAX_STUDENTS);
-	var				data			 = (StudentData){
-								.students = _students_,
-								.count		= 0,
+	var data			 = (StudentData){
+					.students = _students_,
+					.count		= 0,
 	};
 
-	char* studentID;
+	char *studentID;
 
 	load_csv(file_path, &data);
 
@@ -180,7 +180,6 @@ int is_not_unique(StudentData *data, const char *studentID) {
 	for (size_t i = 0; i < data->count; i++) {
 		if (strcmp(data->students[i].id, studentID) == 0)
 			return 1;
-
 	}
 	return 0;
 }
@@ -192,7 +191,7 @@ void add_student(StudentData *data) {
 		return;
 	}
 
-	char* studentID;
+	char *studentID;
 	printf("Enter Student ID: ");
 	studentID = get_rec(Any.char_ptr_type, MAX_STRING);
 
@@ -292,8 +291,8 @@ void pop_history(StudentData *data) {
 					strcmp(data->students[i].course, history->head->change->course) == 0) {
 				printf("Reverting the add of student with ID %s...\n", history->head->change->id);
 				data->students[i] = data->students[--data->count];
-				var temp = history->head;
-				history->head = history->head->prev;
+				var temp					= history->head;
+				history->head			= history->head->prev;
 				free(temp);
 
 				return;
@@ -301,7 +300,7 @@ void pop_history(StudentData *data) {
 				printf("Reverting the change of student with ID %s...\n", history->head->change->id);
 				data->students[i] = *history->head->change;
 
-				var temp = history->head;
+				var temp			= history->head;
 				history->head = history->head->prev;
 				free(temp);
 				return;
@@ -311,8 +310,8 @@ void pop_history(StudentData *data) {
 	// if not find the same id, then add the data
 	printf("Reverting the delete of student with ID %s...\n", history->head->change->id);
 	data->students[data->count++] = *history->head->change;
-	var temp = history->head;
-	history->head = history->head->prev;
+	var temp											= history->head;
+	history->head									= history->head->prev;
 	free(temp);
 }
 

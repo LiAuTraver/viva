@@ -1,7 +1,7 @@
 #define VIVA_DEBUG_ENABLED 1
-#include <net/ancillarycat/viva/generic/forward_list.h>
-#include <net/ancillarycat/viva/viva.h>
-#include <net/ancillarycat/viva/vtest.h>
+#include <accat/viva/generic/forward_list.h>
+#include <accat/viva/viva.h>
+#include <accat/viva/vtest.h>
 #include <string.h>
 
 // Macro usage
@@ -22,14 +22,11 @@ int foo_2(const int a, const int b) {
 	printf("Called foo_2 with %d and %d\n", a, b);
 	return 2;
 }
-bool predicate_of_erase_if(void* data) {
-	return *(int*)data == 2;
-}
+bool predicate_of_erase_if(void *data) { return *(int *)data == 2; }
 
 instantiate_forward_list_of(int)
 
-TEST_SETUP()
-TEST(internal, variadic_macro) {
+	TEST_SETUP() TEST(internal, variadic_macro) {
 	EXPECT_EQ(foo(), 0);
 	EXPECT_EQ(foo(1), 1);
 	EXPECT_EQ(foo(1, 2), 2);
@@ -48,43 +45,43 @@ TEST(forward_list, basic) {
 	EXPECT_EQ(Forward_list_of_int.size(lh), 2);
 	Forward_list_of_int.reverse(lh);
 	EXPECT_EQ(Forward_list_of_int.size(lh), 2);
-	EXPECT_EQ(*(int*)Forward_list_of_int.end(lh)->data_ptr, 2);
+	EXPECT_EQ(*(int *)Forward_list_of_int.end(lh)->data_ptr, 2);
 	Forward_list_of_int.drop(lh);
 	EXPECT_EQ(Forward_list_of_int.size(lh), 1);
-	EXPECT_EQ(*(int*)Forward_list_of_int.end(lh)->data_ptr, 1);
+	EXPECT_EQ(*(int *)Forward_list_of_int.end(lh)->data_ptr, 1);
 }
 
 TEST(forward_list, create) {
 	val maybe_list_head = Forward_list_of_int.create_with(0);
 	EXPECT_EQ(maybe_list_head.has_value, true);
-	EXPECT_EQ(*(int*)Forward_list_of_int.begin(maybe_list_head.value.ptr)->data_ptr, 0);
+	EXPECT_EQ(*(int *)Forward_list_of_int.begin(maybe_list_head.value.ptr)->data_ptr, 0);
 }
 
 TEST(forward_list, push_back) {
 	val maybe_list_head = Forward_list_of_int.create_with(0);
-	var lh = maybe_list_head.value.ptr;
+	var lh							= maybe_list_head.value.ptr;
 
 	Forward_list_of_int.push_back(lh, 1);
 	Forward_list_of_int.push_back(lh, 2);
 
 	EXPECT_EQ(Forward_list_of_int.size(lh), 3);
-	EXPECT_EQ(*(int*)Forward_list_of_int.end(lh)->data_ptr, 2); // Check the last element
+	EXPECT_EQ(*(int *)Forward_list_of_int.end(lh)->data_ptr, 2); // Check the last element
 }
 
 TEST(forward_list, push_front) {
 	val maybe_list_head = Forward_list_of_int.create_with(0);
-	var lh = maybe_list_head.value.ptr;
+	var lh							= maybe_list_head.value.ptr;
 
 	Forward_list_of_int.push_front(lh, 1);
 	Forward_list_of_int.push_front(lh, 2);
 
 	EXPECT_EQ(Forward_list_of_int.size(lh), 3);
-	EXPECT_EQ(*(int*)Forward_list_of_int.end(lh)->data_ptr, 0); // Check the last element
+	EXPECT_EQ(*(int *)Forward_list_of_int.end(lh)->data_ptr, 0); // Check the last element
 }
 
 TEST(forward_list, erase) {
 	val maybe_list_head = Forward_list_of_int.create_with(0);
-	var lh = maybe_list_head.value.ptr;
+	var lh							= maybe_list_head.value.ptr;
 
 	Forward_list_of_int.push_back(lh, 1);
 	Forward_list_of_int.push_back(lh, 2);
@@ -97,19 +94,19 @@ TEST(forward_list, erase) {
 
 TEST(forward_list, drop) {
 	val maybe_list_head = Forward_list_of_int.create_with(0);
-	var lh = maybe_list_head.value.ptr;
+	var lh							= maybe_list_head.value.ptr;
 
 	Forward_list_of_int.push_back(lh, 1);
 	Forward_list_of_int.push_back(lh, 2);
 
 	Forward_list_of_int.drop(lh);
 	EXPECT_EQ(Forward_list_of_int.size(lh), 2);
-	EXPECT_EQ(*(int*)Forward_list_of_int.end(lh)->data_ptr, 1); // the last element should be 1
+	EXPECT_EQ(*(int *)Forward_list_of_int.end(lh)->data_ptr, 1); // the last element should be 1
 }
 
 TEST(forward_list, clear) {
 	val maybe_list_head = Forward_list_of_int.create_with(0);
-	var lh = maybe_list_head.value.ptr;
+	var lh							= maybe_list_head.value.ptr;
 
 	Forward_list_of_int.push_back(lh, 1);
 	Forward_list_of_int.push_back(lh, 2);
@@ -121,16 +118,16 @@ TEST(forward_list, clear) {
 
 TEST(forward_list, free) {
 	val maybe_list_head = Forward_list_of_int.create_with(0);
-	var lh = maybe_list_head.value.ptr;
+	var lh							= maybe_list_head.value.ptr;
 
 	Forward_list_of_int.push_back(lh, 1);
 	Forward_list_of_int.free(&lh);
 	EXPECT_NULL(lh);
 }
 
-TEST(forward_list, unique){
+TEST(forward_list, unique) {
 	val maybe_list_head = Forward_list_of_int.create_with(0);
-	var lh = maybe_list_head.value.ptr;
+	var lh							= maybe_list_head.value.ptr;
 
 	Forward_list_of_int.push_back(lh, 2);
 	Forward_list_of_int.push_back(lh, 1);

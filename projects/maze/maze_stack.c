@@ -1,6 +1,6 @@
 #include "maze_stack.h"
-#include <net/ancillarycat/viva/utils/console.h>
-#include <net/ancillarycat/viva/viva.h>
+#include <accat/viva/utils/console.h>
+#include <accat/viva/viva.h>
 #include <windows.h>
 
 struct maze_stack *create_maze_stack(const size_t capacity) {

@@ -92,7 +92,8 @@ static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_load(struct 
 	return Console;
 }
 static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_get_console_size(struct Terminal *terminal) {
-	VIVA_RUNTIME_REQUIRE(terminal->hConsole != nullptr && (bool)("Invalid console handle"));
+	VIVA_RUNTIME_REQUIRE(terminal->hOutputConsole != nullptr && (bool)("Invalid console handle"));
+
 
 	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
 	if (GetConsoleScreenBufferInfo(terminal->hOutputConsole, &console_screen_buffer_info))

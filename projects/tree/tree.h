@@ -1,8 +1,9 @@
 #pragma once
+#include <accat/viva/viva.h>
 #include <ctype.h>
 #include <iso646.h>
 #include <locale.h>
-#include <net/ancillarycat/viva/viva.h>
+
 
 #ifndef ssize_t
 #define ssize_t long long

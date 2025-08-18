@@ -2,8 +2,8 @@
 #include <locale.h>
 #include <time.h>
 
-#include <net/ancillarycat/viva/utils/console.h>
-#include <net/ancillarycat/viva/utils/cursor.h>
+#include <accat/viva/utils/console.h>
+#include <accat/viva/utils/cursor.h>
 #include "maze.h"
 #include "maze_stack.h"
 
@@ -87,7 +87,6 @@ void random_generate_maze(struct maze *maze, const SHORT size) {
 	}
 	for_each at_maze(row, col) = *(square + row * maze->size.Y + col) ? wall_char : path_char;
 }
-
 
 
 void read_example_maze(struct maze *maze, wchar_t **data, const size_t size) {

@@ -1,7 +1,7 @@
-#include <net/ancillarycat/viva/utils/console.h>
-#include <net/ancillarycat/viva/utils/cursor.h>
-#include <net/ancillarycat/viva/viva.h>
-#include <net/ancillarycat/viva/vtest.h>
+#include <accat/viva/utils/console.h>
+#include <accat/viva/utils/cursor.h>
+#include <accat/viva/viva.h>
+#include <accat/viva/vtest.h>
 
 #include "../projects/maze/maze.h"
 #include "../projects/maze/maze_stack.h"

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "net/ancillarycat/viva/viva.h"
+#include "accat/viva/viva.h"
 
 #define WIDTH 30
 #define HEIGHT 30

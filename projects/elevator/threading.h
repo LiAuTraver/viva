@@ -2,8 +2,8 @@
 
 #include <stdio.h>
 #include <windows.h>
-#include "net/ancillarycat/viva/internal/compat.h"
-#include "net/ancillarycat/viva/viva.h"
+#include "viva/internal/compat.h"
+#include "viva/viva.h"
 
 
 struct viva_cstd_threading_thread_t {

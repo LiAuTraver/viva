@@ -1,10 +1,10 @@
 #include "tree.h"
-#include <../include/net/ancillarycat/viva/viva.h>
-#include <../include/net/ancillarycat/viva/vtest.h>
+#include <../include/accat/viva/viva.h>
+#include <../include/accat/viva/vtest.h>
 
 TEST_SETUP()
 
-TEST(simple){
+TEST(simple) {
 	val str = alloc(char, 100);
 	strcpy(str, "Hello, World!");
 	trim_str(str);
@@ -12,13 +12,13 @@ TEST(simple){
 	var nodes = alloc(Node, strlen(str));
 	var depth = 1ll;
 	build_tree(&nodes, &str, &depth);
-	EXPECT_EQ(depth,4);
+	EXPECT_EQ(depth, 4);
 	val is_right_str = alloc(bool, depth);
-	*is_right_str = 0;
-	display_tree(nodes,1,is_right_str);
+	*is_right_str		 = 0;
+	display_tree(nodes, 1, is_right_str);
 }
 
-TEST(no_alnum){
+TEST(no_alnum) {
 	val str = alloc(char, 100);
 	strcpy(str, "!@#$%^&*()_+{}|:\"<>?`~");
 	trim_str(str);
@@ -26,10 +26,10 @@ TEST(no_alnum){
 	var nodes = alloc(Node, strlen(str));
 	var depth = 1ll;
 	build_tree(&nodes, &str, &depth);
-	EXPECT_EQ(depth,1);
+	EXPECT_EQ(depth, 1);
 	val is_right_str = alloc(bool, depth);
-	*is_right_str = 0;
-	display_tree(nodes,1,is_right_str);
+	*is_right_str		 = 0;
+	display_tree(nodes, 1, is_right_str);
 }
 
 TEST(super_long) {
@@ -42,6 +42,6 @@ TEST(super_long) {
 	build_tree(&nodes, &str, &depth);
 	EXPECT_EQ(depth, 6);
 	val is_right_str = alloc(bool, depth);
-	*is_right_str = 0;
+	*is_right_str		 = 0;
 	display_tree(nodes, 1, is_right_str);
 }

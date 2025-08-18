@@ -1,10 +1,10 @@
 #pragma once
 #include <iso646.h>
 #include <stdlib.h>
-#include <wchar.h>
 #include_next <string.h>
-#include "net/ancillarycat/viva/internal/compat.h"
-#include "net/ancillarycat/viva/viva.h"
+#include <wchar.h>
+#include "accat/viva/internal/compat.h"
+#include "accat/viva/viva.h"
 
 // Define the viva_cstd_wstring struct
 struct viva_cstd_wstring {

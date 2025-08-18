@@ -5,8 +5,8 @@
 #include <time.h>
 #include <wchar.h>
 #define VIVA_DEBUG_ENABLED 1
-#include <net/ancillarycat/viva/utils/console.h>
-#include <net/ancillarycat/viva/viva.h>
+#include <accat/viva/utils/console.h>
+#include <accat/viva/viva.h>
 #include "maze.h"
 #include "maze_stack.h"
 
@@ -21,6 +21,7 @@ int main(const int argc, char **argv, const char **envp) {
 	val parse_callback = parse_args(argc, &argv, &choice, &data);
 	if (parse_callback != kOkStatus)
 		return fprintf(stderr, "Maze: Argument parsing failed with error code %d\n", parse_callback), parse_callback;
+
 
 	val init_callback = console_init();
 	if (init_callback != kOkStatus)

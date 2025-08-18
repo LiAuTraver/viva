@@ -1,9 +1,10 @@
+#include <accat/viva/viva.h>
 #include <ctype.h>
 #include <iso646.h>
-#include <net/ancillarycat/viva/viva.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 #include "treev.h"
 
@@ -17,8 +18,8 @@ int main() {
 	print_intro(max_token_count, max_input_length);
 	while (fgets(input, max_input_length, stdin)) {
 		*(input + strcspn(input, "\r\n")) = '\0';
-		val tokens = alloc(char*,max_token_count);
-		val		 token_count								= split_input(input, tokens, " ");
+		val tokens												= alloc(char *, max_token_count);
+		val token_count										= split_input(input, tokens, " ");
 		if (not token_count) {
 			print_error_cnt0();
 			continue;
