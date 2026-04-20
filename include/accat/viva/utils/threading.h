@@ -2,8 +2,8 @@
 
 #include <stdio.h>
 #include <windows.h>
-#include "viva/internal/compat.h"
-#include "viva/viva.h"
+
+#include "accat/viva/viva.h"
 
 
 struct viva_cstd_threading_thread_t {
@@ -52,31 +52,45 @@ static inline int viva_cstd_threading_mutex_destroy(const struct viva_cstd_threa
 	return CloseHandle(mutex->handle);
 }
 
-#pragma pack(push, 1)
+
 struct {
 	struct {
-		typeof(viva_cstd_threading_thread_create) *create;
-		typeof(viva_cstd_threading_thread_join)		*join;
-		typeof(viva_cstd_threading_thread_detach) *detach;
-	} Thread;
+		typeof(viva_cstd_threading_thread_create) *const create;
+		typeof(viva_cstd_threading_thread_join) *const	 join;
+		typeof(viva_cstd_threading_thread_detach) *const detach;
+	} const Thread;
 	struct {
-		typeof(viva_cstd_threading_mutex_init)		*create;
-		typeof(viva_cstd_threading_mutex_lock)		*lock;
-		typeof(viva_cstd_threading_mutex_unlock)	*unlock;
-		typeof(viva_cstd_threading_mutex_destroy) *destroy;
-	} Mutex;
-} static const Threading = {.Thread =
-															{
-																.create = viva_cstd_threading_thread_create,
-																.join		= viva_cstd_threading_thread_join,
-																.detach = viva_cstd_threading_thread_detach,
-															},
-														.Mutex = {
-															.create	 = viva_cstd_threading_mutex_init,
-															.lock		 = viva_cstd_threading_mutex_lock,
-															.unlock	 = viva_cstd_threading_mutex_unlock,
-															.destroy = viva_cstd_threading_mutex_destroy,
-														}};
-#pragma pack(pop)
+		typeof(viva_cstd_threading_mutex_init) *const		 create;
+		typeof(viva_cstd_threading_mutex_lock) *const		 lock;
+		typeof(viva_cstd_threading_mutex_unlock) *const	 unlock;
+		typeof(viva_cstd_threading_mutex_destroy) *const destroy;
+	} const Mutex;
+} static const Threading = {
+	.Thread =
+		{
+			.create = viva_cstd_threading_thread_create,
+			.join		= viva_cstd_threading_thread_join,
+			.detach = viva_cstd_threading_thread_detach,
+		},
+	.Mutex =
+		{
+			.create	 = viva_cstd_threading_mutex_init,
+			.lock		 = viva_cstd_threading_mutex_lock,
+			.unlock	 = viva_cstd_threading_mutex_unlock,
+			.destroy = viva_cstd_threading_mutex_destroy,
+		},
+};
+
 typedef struct viva_cstd_threading_thread_t viva_thread_t;
 typedef struct viva_cstd_threading_mutex_t	viva_mutex_t;
+
+#pragma GCC poison viva_cstd_threading_thread_t
+#pragma GCC poison viva_cstd_threading_mutex_t
+
+#pragma GCC poison viva_cstd_threading_thread_create
+#pragma GCC poison viva_cstd_threading_thread_join
+#pragma GCC poison viva_cstd_threading_thread_detach
+#pragma GCC poison viva_cstd_threading_mutex_init
+#pragma GCC poison viva_cstd_threading_mutex_lock
+#pragma GCC poison viva_cstd_threading_mutex_unlock
+#pragma GCC poison viva_cstd_threading_mutex_destroy

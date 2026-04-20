@@ -14,13 +14,6 @@ struct maze {
 	COORD		 entrance;
 	COORD		 exit;
 };
-enum direction {
-	kBack	 = 0,
-	kLeft	 = 1,
-	kRight = 2,
-	kUp		 = 3,
-	kDown	 = 4,
-};
 #pragma pack(pop)
 
 status_t random_maze_init(struct maze *maze, const SHORT size, bool *square) {
@@ -330,7 +323,7 @@ typeof(Cursor) perform_step(const struct maze *maze, COORD *current_pos_at_maze,
 
 result_t find_and_print_path(const struct maze *maze, const DWORD interval) {
 
-	smart_stack var stack = Stack.create(maze->size.X * maze->size.Y);
+	smart_stack struct maze_stack *stack = Stack.create(maze->size.X * maze->size.Y);
 	Cursor.set(at_terminal(maze->entrance));
 	COORD current_pos_at_maze = maze->entrance;
 	var		counter							= alloc(size_t, 1);

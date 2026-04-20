@@ -43,7 +43,7 @@
 	}                                                                                                                                        \
 	__attribute__((constructor(VIVA_TEST_DEFAULT_CTOR_COUNTER))) void setup() {                                                              \
 		VIVA_TEST_REGISTER_SIGNAL_HANDLER();                                                                                                   \
-		VIVA_UNUSED(_expr);                                                                                                                           \
+		VIVA_UNUSED(_expr);                                                                                                                    \
 		fprintf(stdout, "Running tests...\n");                                                                                                 \
 		fflush(stdout);                                                                                                                        \
 	}
@@ -93,7 +93,7 @@
 #ifndef VIVA_EXPORT_OFF
 #define EXPECT_EQ(x, y) VIVA_EXPECT_EQ(x, y)
 #define EXPECT_TRUE(x) VIVA_EXPECT_TRUE(x)
-#define EXPECT_NULL(x) VIVA_EXPECT_EQ(x, nullptr)
+#define EXPECT_NULL(x) VIVA_EXPECT_TRUE(!x)
 #define TEST(...) VIVA_TEST(__VA_ARGS__)
 #define TEST_SETUP(...) VIVA_TEST_SETUP(__VA_ARGS__)
 #endif

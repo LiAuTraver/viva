@@ -5,15 +5,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <accat/viva/viva.h>
 
 typedef struct viva_node Node;
 
-void	 preorder_traversal(Node *) __attribute__((nonnull(1)));
+void	 preorder_traversal(Node *);
 size_t split_input(char *, char **, const char *) __attribute__((nonnull(1, 2, 3)));
 Node	*current_node(Node *, char *) __attribute__((nonnull(1, 2)));
-void	 print_tree(Node *) __attribute__((nonnull(1)));
+void	 print_tree(Node *);
 bool	 is_unique_node(Node *, char **, size_t) __attribute__((nonnull(1, 2)));
-bool	 is_valid_node(Node *, char **, size_t, Node *) __attribute__((nonnull(1, 2, 4)));
+bool	 is_valid_node(Node *, char **, size_t, Node *) __attribute__((nonnull(1, 2)));
 void	 print_intro(size_t, size_t);
 void	 print_error_cnt0(void);
 void	 add_children(char **, size_t, Node *) __attribute__((nonnull(1, 3)));

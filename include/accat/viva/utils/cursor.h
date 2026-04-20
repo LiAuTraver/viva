@@ -1,8 +1,11 @@
 #pragma once
-#include <accat/viva/viva.h>
+#include <windows.h>
+
 #include <stdio.h>
 #include <wchar.h>
-#include <windows.h>
+
+
+#include <accat/viva/viva.h>
 
 
 struct VIVA_CURSOR_SINGLETON;
@@ -36,19 +39,21 @@ struct VIVA_CURSOR_SINGLETON {
 	typeof(viva_cstd_impl_cursor_get_cursor_position) *get;
 	typeof(viva_cstd_impl_cursor_putc)								*putc;
 	typeof(viva_cstd_impl_cursor_set_cursor_win)			*set;
-} static const Cursor = {.tell						= viva_ctsd_impl_cursor_save,
-												 .rewind					= viva_cstd_impl_cursor_restore,
-												 .move						= viva_cstd_impl_cursor_move_cursor_win,
-												 .hide						= viva_cstd_impl_cursor_hide,
-												 .show						= viva_cstd_impl_cursor_show,
-												 .back						= viva_cstd_impl_cursor_move_backward,
-												 .next_line				= viva_cstd_impl_cursor_vertical_tab,
-												 .clear_terminal	= viva_cstd_impl_cursor_clear_terminal,
-												 .carriage_return = viva_cstd_impl_cursor_carriage_return,
-												 .get							= viva_cstd_impl_cursor_get_cursor_position,
-												 .putc_at					= viva_cstd_impl_cursor_putc_at_coords,
-												 .putc						= viva_cstd_impl_cursor_putc,
-												 .set							= viva_cstd_impl_cursor_set_cursor_win};
+} static const Cursor = {
+	.tell						 = viva_ctsd_impl_cursor_save,
+	.rewind					 = viva_cstd_impl_cursor_restore,
+	.move						 = viva_cstd_impl_cursor_move_cursor_win,
+	.hide						 = viva_cstd_impl_cursor_hide,
+	.show						 = viva_cstd_impl_cursor_show,
+	.back						 = viva_cstd_impl_cursor_move_backward,
+	.next_line			 = viva_cstd_impl_cursor_vertical_tab,
+	.clear_terminal	 = viva_cstd_impl_cursor_clear_terminal,
+	.carriage_return = viva_cstd_impl_cursor_carriage_return,
+	.get						 = viva_cstd_impl_cursor_get_cursor_position,
+	.putc_at				 = viva_cstd_impl_cursor_putc_at_coords,
+	.putc						 = viva_cstd_impl_cursor_putc,
+	.set						 = viva_cstd_impl_cursor_set_cursor_win,
+};
 // clang-format on
 #pragma pack(pop)
 inline static struct VIVA_CURSOR_SINGLETON viva_ctsd_impl_cursor_save() {
@@ -120,5 +125,17 @@ inline static struct VIVA_CURSOR_SINGLETON viva_cstd_impl_cursor_putc_at_coords(
 	return Cursor;
 }
 
-#undef VIVA_CURSOR_SINGLETON
-#define VIVA_CURSOR_SINGLETON // nothing
+#pragma GCC poison VIVA_CURSOR_SINGLETON
+#pragma GCC poison viva_ctsd_impl_cursor_save
+#pragma GCC poison viva_cstd_impl_cursor_restore
+#pragma GCC poison viva_cstd_impl_cursor_move_cursor_win
+#pragma GCC poison viva_cstd_impl_cursor_hide
+#pragma GCC poison viva_cstd_impl_cursor_show
+#pragma GCC poison viva_cstd_impl_cursor_move_backward
+#pragma GCC poison viva_cstd_impl_cursor_vertical_tab
+#pragma GCC poison viva_cstd_impl_cursor_clear_terminal
+#pragma GCC poison viva_cstd_impl_cursor_carriage_return
+#pragma GCC poison viva_cstd_impl_cursor_putc_at_coords
+#pragma GCC poison viva_cstd_impl_cursor_get_cursor_position
+#pragma GCC poison viva_cstd_impl_cursor_putc
+#pragma GCC poison viva_cstd_impl_cursor_set_cursor_win

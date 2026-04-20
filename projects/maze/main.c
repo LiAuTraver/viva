@@ -4,9 +4,11 @@
 #include <stdio.h>
 #include <time.h>
 #include <wchar.h>
+
 #define VIVA_DEBUG_ENABLED 1
 #include <accat/viva/utils/console.h>
 #include <accat/viva/viva.h>
+
 #include "maze.h"
 #include "maze_stack.h"
 

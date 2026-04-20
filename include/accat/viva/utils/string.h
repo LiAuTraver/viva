@@ -1,10 +1,9 @@
 #pragma once
-#include <iso646.h>
 #include <stdlib.h>
-#include_next <string.h>
+#include <string.h>
 #include <wchar.h>
-#include "accat/viva/internal/compat.h"
-#include "accat/viva/viva.h"
+
+#include "../viva.h"
 
 // Define the viva_cstd_wstring struct
 struct viva_cstd_wstring {
@@ -21,13 +20,12 @@ static wchar_t										*viva_cstd_wstring_find(const struct viva_cstd_wstring *
 static size_t											 viva_cstd_wstring_length(const struct viva_cstd_wstring *);
 
 struct VIVA_WSTR_SINGLETON {
-	typeof(viva_cstd_wstring_init)	 *init;
-	typeof(viva_cstd_wstring_concat) *concat;
-	typeof(viva_cstd_wstring_push)	 *push;
-	typeof(viva_cstd_wstring_find)	 *find;
-	typeof(viva_cstd_wstring_length) *length;
-} // Define the WStr singleton
-static WStr = {
+	typeof(viva_cstd_wstring_init) *const		init;
+	typeof(viva_cstd_wstring_concat) *const concat;
+	typeof(viva_cstd_wstring_push) *const		push;
+	typeof(viva_cstd_wstring_find) *const		find;
+	typeof(viva_cstd_wstring_length) *const length;
+} static WStr = {
 	.init		= viva_cstd_wstring_init,
 	.concat = viva_cstd_wstring_concat,
 	.push		= viva_cstd_wstring_push,
@@ -79,8 +77,15 @@ static inline wchar_t *viva_cstd_wstring_find(const struct viva_cstd_wstring *s,
 
 static inline size_t viva_cstd_wstring_length(const struct viva_cstd_wstring *s) { return s->size; }
 
-// Typedefs for convenience
+
 typedef struct viva_cstd_string	 string;
 typedef struct viva_cstd_wstring wstring;
-#undef VIVA_WSTR_SINGLETON
-#define VIVA_WSTR_SINGLETON // nothing
+
+#pragma GCC poison viva_cstd_string
+#pragma GCC poison viva_cstd_wstring
+
+#pragma GCC poison viva_cstd_wstring_init
+#pragma GCC poison viva_cstd_wstring_concat
+#pragma GCC poison viva_cstd_wstring_push
+#pragma GCC poison viva_cstd_wstring_find
+#pragma GCC poison viva_cstd_wstring_length

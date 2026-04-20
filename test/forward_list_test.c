@@ -24,9 +24,10 @@ int foo_2(const int a, const int b) {
 }
 bool predicate_of_erase_if(void *data) { return *(int *)data == 2; }
 
-instantiate_forward_list_of(int)
+instantiate_forward_list_of(int);
 
-	TEST_SETUP() TEST(internal, variadic_macro) {
+TEST_SETUP();
+TEST(internal, variadic_macro) {
 	EXPECT_EQ(foo(), 0);
 	EXPECT_EQ(foo(1), 1);
 	EXPECT_EQ(foo(1, 2), 2);

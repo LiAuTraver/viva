@@ -1,16 +1,18 @@
-#include <accat/viva/viva.h>
 #include <ctype.h>
 #include <iso646.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 
+#include <accat/viva/viva.h>
 #include "treev.h"
 
-constexpr val max_token_count	 = 16ull;
-constexpr val max_input_length = 128ull;
-
+enum : size_t {
+	max_token_count	 = 16ull,
+	max_input_length = 128ull,
+};
 
 int main() {
 	var		input = alloc(char, max_input_length);

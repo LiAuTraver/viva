@@ -23,7 +23,7 @@ extern "C" {
 #define VIVA_HAS_C23
 #endif
 
-#ifndef VIVA_HAS_C23
+#if !defined(VIVA_HAS_C23) || defined(__INTELLISENSE__)
 #include <iso646.h>
 #endif
 
@@ -33,8 +33,13 @@ extern "C" {
 #undef val
 #ifdef VIVA_HAS_C23
 // C23 changed the usage of `auto` keyword, make it more like C++'s.
+#if defined(__GNUC__) || defined(__clang__)
+#define var __auto_type
+#define val const __auto_type
+#else
 #define var auto
 #define val const auto
+#endif
 #else
 #if defined(__GNUC__) || defined(__clang__)
 // GNU and Clang support `__auto_type` as an extension before C23.

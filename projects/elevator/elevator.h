@@ -3,28 +3,33 @@
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
+
 #include "accat/viva/utils/console.h"
-#include "string.h"
+#include "accat/viva/utils/string.h"
 
 static const char *FirstNames[] = {
 	"Amy",			"Mike",		 "Chris",	 "Tina",			"Sam",			"Laura",	"Tom",		"Jack",			 "Jill",		 "Mark",
 	"Paul",			"Anna",		 "John",	 "Ella",			"Nina",			"Luke",		"Ryan",		"Sophie",		 "Zoe",			 "Liam",
 	"Noah",			"Emma",		 "Olivia", "Ava",				"Isabella", "Mia",		"Sophia", "Charlotte", "Amelia",	 "Harper",
 	"Evelyn",		"Abigail", "Emily",	 "Elizabeth", "Mila",			"Ella",		"Avery",	"Scarlett",	 "Grace",		 "Chloe",
-	"Victoria", "Riley",	 "Aria",	 "Lily",			"Nora",			"Camila", "Hannah", "Elena",		 "Penelope", "Layla"};
+	"Victoria", "Riley",	 "Aria",	 "Lily",			"Nora",			"Camila", "Hannah", "Elena",		 "Penelope", "Layla",
+};
 
 static const char *LastNames[] = {
 	"Smith", "Johnson",	 "Williams", "Brown",		 "Jones",		"Garcia",		"Miller",		"Davis",	 "Martinez", "Hernandez",
 	"Lopez", "Gonzalez", "Wilson",	 "Anderson", "Thomas",	"Taylor",		"Moore",		"Jackson", "Martin",	 "Lee",
 	"Perez", "Thompson", "White",		 "Harris",	 "Sanchez", "Clark",		"Ramirez",	"Lewis",	 "Robinson", "Walker",
 	"Young", "Allen",		 "King",		 "Wright",	 "Scott",		"Torres",		"Nguyen",		"Hill",		 "Flores",	 "Green",
-	"Adams", "Nelson",	 "Baker",		 "Hall",		 "Rivera",	"Campbell", "Mitchell", "Carter",	 "Roberts",	 "Gomez"};
-static const char *elevatorMessages[] = {"Elevator is stationary, a call is on the current floor ==> Open the door",
-																				 "Elevator is stationary, a call is on an upper floor ==> Move up",
-																				 "Elevator is stationary, a call is on a lower floor ==> Move down",
-																				 "Elevator is stationary, passengers want to go up ==> Move up",
-																				 "Elevator is stationary, passengers want to go down ==> Move down",
-																				 "Elevator is stationary, overloaded ==> Close the door and warn"};
+	"Adams", "Nelson",	 "Baker",		 "Hall",		 "Rivera",	"Campbell", "Mitchell", "Carter",	 "Roberts",	 "Gomez",
+};
+static const char *elevatorMessages[] = {
+	"Elevator is stationary, a call is on the current floor ==> Open the door",
+	"Elevator is stationary, a call is on an upper floor ==> Move up",
+	"Elevator is stationary, a call is on a lower floor ==> Move down",
+	"Elevator is stationary, passengers want to go up ==> Move up",
+	"Elevator is stationary, passengers want to go down ==> Move down",
+	"Elevator is stationary, overloaded ==> Close the door and warn",
+};
 struct _passenger_t {
 	char name[50];
 	int	 weight;
@@ -84,12 +89,12 @@ static inline struct VIVA_CSTD_TERMINAL_RECT
 viva_cstd_terminal_rect_fill_all(const struct viva_cstd_terminal_rectangle *, wchar_t);
 
 struct VIVA_CSTD_TERMINAL_RECT {
-	typeof(viva_cstd_terminal_rect_init)				*init;
-	typeof(viva_cstd_terminal_rect_set_outline) *set_outline;
-	typeof(viva_cstd_terminal_rect_draw)				*draw;
-	typeof(viva_cstd_terminal_rect_free)				*free;
-	typeof(viva_cstd_terminal_rect_fill)				*fill;
-	typeof(viva_cstd_terminal_rect_fill_all)		*fill_all;
+	typeof(viva_cstd_terminal_rect_init) *const				 init;
+	typeof(viva_cstd_terminal_rect_set_outline) *const set_outline;
+	typeof(viva_cstd_terminal_rect_draw) *const				 draw;
+	typeof(viva_cstd_terminal_rect_free) *const				 free;
+	typeof(viva_cstd_terminal_rect_fill) *const				 fill;
+	typeof(viva_cstd_terminal_rect_fill_all) *const		 fill_all;
 } static const viva_rectangle = {
 	.init				 = viva_cstd_terminal_rect_init,
 	.set_outline = viva_cstd_terminal_rect_set_outline,
@@ -170,9 +175,17 @@ viva_cstd_terminal_rect_fill_all(const struct viva_cstd_terminal_rectangle *rect
 }
 
 
-#undef VIVA_CSTD_TERMINAL_RECT
-#define VIVA_CSTD_TERMINAL_RECT // nothing
-
 typedef struct viva_cstd_terminal_rectangle rectangle;
 
 #define auto_ptr_rect __attribute__((cleanup(viva_cstd_terminal_rect_free)))
+
+
+#pragma GCC poison VIVA_CSTD_TERMINAL_RECT
+#pragma GCC poison viva_cstd_terminal_rectangle
+
+#pragma GCC poison viva_cstd_terminal_rect_init
+#pragma GCC poison viva_cstd_terminal_rect_set_outline
+#pragma GCC poison viva_cstd_terminal_rect_draw
+#pragma GCC poison viva_cstd_terminal_rect_free
+#pragma GCC poison viva_cstd_terminal_rect_fill
+#pragma GCC poison viva_cstd_terminal_rect_fill_all

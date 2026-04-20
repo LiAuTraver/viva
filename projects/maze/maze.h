@@ -1,29 +1,37 @@
 #pragma once
-#include <accat/viva/viva.h>
 #include <windows.h>
 
+#include <accat/viva/utils/cursor.h>
+#include <accat/viva/viva.h>
+
+
 struct maze;
-enum direction;
-enum choice;
 struct maze_stack;
-#pragma pack(push, 1)
+
 enum choice {
 	kExample = 1,
 	kRandom	 = 2,
 	kFile		 = 3,
 };
-#pragma pack(pop)
-static constexpr val wall_char		 = L'■';
-static constexpr val path_char		 = L'□';
-static constexpr val entrance_char = L'〓';
-static constexpr val exit_char		 = L'〓';
-static constexpr val current_char	 = L'㊣';
-static constexpr val visited_char	 = L'☒';
-static constexpr val left_arrow		 = L'←';
-static constexpr val right_arrow	 = L'→';
-static constexpr val up_arrow			 = L'↑';
-static constexpr val down_arrow		 = L'↓';
-// extern static constexpr wchar_t* example_maze[];
+enum direction {
+	kBack	 = 0,
+	kLeft	 = 1,
+	kRight = 2,
+	kUp		 = 3,
+	kDown	 = 4,
+};
+enum : unsigned short {
+	wall_char			= L'■',
+	path_char			= L'□',
+	entrance_char = L'〓',
+	exit_char			= L'〓',
+	current_char	= L'㊣',
+	visited_char	= L'☒',
+	left_arrow		= L'←',
+	right_arrow		= L'→',
+	up_arrow			= L'↑',
+	down_arrow		= L'↓',
+};
 /// @brief main function
 status_t maze_main(enum choice, void *) __attribute__((nonnull(2)));
 
@@ -41,7 +49,6 @@ void viva_maze_free_with_data_ptr(struct maze **) __attribute__((nonnull(1)));
 /// @brief Prints the help message
 status_t print_help_message();
 /// @brief Initializes the random maze
-status_t random_maze_init(struct maze *, SHORT, bool *) __attribute__((nonnull(1, 3)));
 /// @brief Carves the path
 status_t carve_path(SHORT, COORD, bool *) __attribute__((nonnull(3)));
 /// @brief Generates the random maze
@@ -91,25 +98,25 @@ void read_example_maze(struct maze *, wchar_t **, size_t) __attribute__((nonnull
 		for_each_row                                                                                                       \
 				for_each_col
 static wchar_t* example_maze[] = {
-	LR"(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)",
-	LR"(0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 1)",
-	LR"(1 1 0 1 1 1 1 1 0 0 0 0 0 0 0 0 0 1 1 1)",
-	LR"(1 0 0 1 0 1 0 1 0 1 1 1 1 1 1 0 1 1 0 1)",
-	LR"(1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1)",
-	LR"(1 0 0 1 0 1 0 1 1 1 0 1 0 1 1 1 1 1 0 1)",
-	LR"(1 0 1 1 0 1 0 1 1 0 0 0 0 0 1 0 1 1 0 1)",
-	LR"(1 0 0 0 0 1 0 1 1 1 1 1 0 1 1 0 1 1 0 1)",
-	LR"(1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1)",
-	LR"(1 1 1 1 0 1 0 1 1 1 0 1 0 1 1 0 0 1 0 1)",
-	LR"(1 0 0 1 0 1 0 1 1 1 0 1 0 1 1 0 1 1 0 1)",
-	LR"(1 0 0 1 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1)",
-	LR"(1 0 1 1 0 0 1 1 1 1 1 1 0 1 0 0 1 0 0 1)",
-	LR"(1 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 1 0 0 1)",
-	LR"(1 0 1 1 0 0 1 1 1 1 1 1 1 1 0 0 1 0 0 1)",
-	LR"(1 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1)",
-	LR"(1 0 0 0 0 0 1 0 0 1 0 1 1 1 0 1 1 0 1 1)",
-	LR"(1 0 0 0 0 0 1 0 0 0 1 0 1 1 0 1 1 0 1 1)",
-	LR"(1 0 1 1 1 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0)",
-	LR"(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)",
+	L"1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1",
+	L"0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 1",
+	L"1 1 0 1 1 1 1 1 0 0 0 0 0 0 0 0 0 1 1 1",
+	L"1 0 0 1 0 1 0 1 0 1 1 1 1 1 1 0 1 1 0 1",
+	L"1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1",
+	L"1 0 0 1 0 1 0 1 1 1 0 1 0 1 1 1 1 1 0 1",
+	L"1 0 1 1 0 1 0 1 1 0 0 0 0 0 1 0 1 1 0 1",
+	L"1 0 0 0 0 1 0 1 1 1 1 1 0 1 1 0 1 1 0 1",
+	L"1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1",
+	L"1 1 1 1 0 1 0 1 1 1 0 1 0 1 1 0 0 1 0 1",
+	L"1 0 0 1 0 1 0 1 1 1 0 1 0 1 1 0 1 1 0 1",
+	L"1 0 0 1 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1",
+	L"1 0 1 1 0 0 1 1 1 1 1 1 0 1 0 0 1 0 0 1",
+	L"1 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 1 0 0 1",
+	L"1 0 1 1 0 0 1 1 1 1 1 1 1 1 0 0 1 0 0 1",
+	L"1 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1",
+	L"1 0 0 0 0 0 1 0 0 1 0 1 1 1 0 1 1 0 1 1",
+	L"1 0 0 0 0 0 1 0 0 0 1 0 1 1 0 1 1 0 1 1",
+	L"1 0 1 1 1 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0",
+	L"1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1",
 };
 // clang-format on

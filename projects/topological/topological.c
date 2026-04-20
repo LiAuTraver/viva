@@ -6,7 +6,7 @@
 
 #include "accat/viva/viva.h"
 
-constexpr val max_size = 100;
+enum { max_size = 100 };
 
 void push_to_adjacency_list(int *adjacency_matrix, int *adjacency_list_len, int x, int y) {
 	*(adjacency_matrix + x * max_size + ++(*(adjacency_list_len + x))) = y;

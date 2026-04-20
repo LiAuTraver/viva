@@ -3,6 +3,7 @@
 #include <locale.h>
 #include <time.h>
 #include <windows.h>
+
 #include "../internal/viva_internal_export.h"
 #include "cursor.h"
 
@@ -33,27 +34,29 @@ struct Terminal {
 	.cursor					= (COORD){0, 0},
 };
 
-#pragma pack(push, 1)
+
 struct VIVA_CONSOLE_SINGLETON {
-	typeof(viva_cstd_impl_terminal_save_console_buffer)		 *save;
-	typeof(viva_cstd_impl_terminal_clear_console)					 *clear;
-	typeof(viva_cstd_impl_terminal_restore_console_buffer) *restore;
-	typeof(viva_cstd_impl_terminal_get_console_size)			 *get;
-	typeof(viva_cstd_impl_terminal_init)									 *init;
-	typeof(viva_cstd_impl_terminal_load)									 *load;
-	typeof(viva_cstd_impl_terminal_sleep_win)							 *sleep;
-	typeof(viva_cstd_impl_terminal_set_cursor_state)			 *set_cursor_state;
-	typeof(viva_cstd_impl_terminal_set_color)							 *set_color;
-} static Console = {.save							= viva_cstd_impl_terminal_save_console_buffer,
-										.clear						= viva_cstd_impl_terminal_clear_console,
-										.restore					= viva_cstd_impl_terminal_restore_console_buffer,
-										.get							= viva_cstd_impl_terminal_get_console_size,
-										.init							= viva_cstd_impl_terminal_init,
-										.load							= viva_cstd_impl_terminal_load,
-										.sleep						= viva_cstd_impl_terminal_sleep_win,
-										.set_cursor_state = viva_cstd_impl_terminal_set_cursor_state,
-										.set_color				= viva_cstd_impl_terminal_set_color};
-#pragma pack(pop)
+	typeof(viva_cstd_impl_terminal_save_console_buffer) *const		save;
+	typeof(viva_cstd_impl_terminal_clear_console) *const					clear;
+	typeof(viva_cstd_impl_terminal_restore_console_buffer) *const restore;
+	typeof(viva_cstd_impl_terminal_get_console_size) *const				get;
+	typeof(viva_cstd_impl_terminal_init) *const										init;
+	typeof(viva_cstd_impl_terminal_load) *const										load;
+	typeof(viva_cstd_impl_terminal_sleep_win) *const							sleep;
+	typeof(viva_cstd_impl_terminal_set_cursor_state) *const				set_cursor_state;
+	typeof(viva_cstd_impl_terminal_set_color) *const							set_color;
+} static Console = {
+	.save							= viva_cstd_impl_terminal_save_console_buffer,
+	.clear						= viva_cstd_impl_terminal_clear_console,
+	.restore					= viva_cstd_impl_terminal_restore_console_buffer,
+	.get							= viva_cstd_impl_terminal_get_console_size,
+	.init							= viva_cstd_impl_terminal_init,
+	.load							= viva_cstd_impl_terminal_load,
+	.sleep						= viva_cstd_impl_terminal_sleep_win,
+	.set_cursor_state = viva_cstd_impl_terminal_set_cursor_state,
+	.set_color				= viva_cstd_impl_terminal_set_color,
+};
+
 
 static inline struct VIVA_CONSOLE_SINGLETON viva_cstd_impl_terminal_sleep_win(const DWORD milliseconds) {
 	Sleep(milliseconds);
@@ -168,3 +171,14 @@ static inline status_t console_restore() {
 	Console.restore(&Terminal);
 	return kOkStatus;
 }
+
+#pragma GCC poison VIVA_CONSOLE_SINGLETON
+#pragma GCC poison viva_cstd_impl_terminal_save_console_buffer
+#pragma GCC poison viva_cstd_impl_terminal_clear_console
+#pragma GCC poison viva_cstd_impl_terminal_restore_console_buffer
+#pragma GCC poison viva_cstd_impl_terminal_get_console_size
+#pragma GCC poison viva_cstd_impl_terminal_init
+#pragma GCC poison viva_cstd_impl_terminal_load
+#pragma GCC poison viva_cstd_impl_terminal_sleep_win
+#pragma GCC poison viva_cstd_impl_terminal_set_cursor_state
+#pragma GCC poison viva_cstd_impl_terminal_set_color

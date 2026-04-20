@@ -5,13 +5,11 @@
 
 #include "../../include/accat/viva/viva.h"
 
-#if __STDC_VERSION__ >= 202000L
-constexpr val MAX_STUDENTS = 1000;
-constexpr val MAX_STRING	 = 100;
-#else
-#define MAX_STUDENTS 1000
-#define MAX_STRING 100
-#endif
+
+enum {
+	max_students = 1000,
+	max_string	 = 100,
+};
 
 typedef struct _student			 Student;
 typedef struct _student_data StudentData;
@@ -29,11 +27,11 @@ void push_history(Student *student);
 void pop_history(StudentData *data);
 
 typedef struct _student {
-	char id[MAX_STRING];
-	char name[MAX_STRING];
-	char major[MAX_STRING];
-	char department[MAX_STRING];
-	char course[MAX_STRING];
+	char id[max_string];
+	char name[max_string];
+	char major[max_string];
+	char department[max_string];
+	char course[max_string];
 } Student;
 
 typedef struct _student_data {
@@ -55,10 +53,10 @@ var history = (History *)nullptr;
 int main(int argc, char **argv, char **envp) {
 	char *file_path = nullptr;
 	if (argc < 2)
-		file_path = R"(.\data.csv)";
+		file_path = "data.csv";
 	else
 		file_path = *(argv + 1);
-	var _students_ = alloc(Student, MAX_STUDENTS);
+	var _students_ = alloc(Student, max_students);
 	var data			 = (StudentData){
 					.students = _students_,
 					.count		= 0,
@@ -94,17 +92,17 @@ int main(int argc, char **argv, char **envp) {
 			break;
 		case 4:
 			printf("Enter Student ID to delete: ");
-			studentID = get_rec(Any.char_ptr_type, MAX_STRING);
+			studentID = get_rec(Any.char_ptr_type, max_string);
 			delete_student(&data, studentID);
 			break;
 		case 5:
 			printf("Enter the Student ID to modify: ");
-			studentID = get_rec(Any.char_ptr_type, MAX_STRING);
+			studentID = get_rec(Any.char_ptr_type, max_string);
 			modify_student(&data, studentID);
 			break;
 		case 6:
 			printf("Enter Student ID to query: ");
-			studentID = get_rec(Any.char_ptr_type, MAX_STRING);
+			studentID = get_rec(Any.char_ptr_type, max_string);
 			query_student(&data, studentID);
 			break;
 		case 7:
@@ -145,7 +143,7 @@ void load_csv(const char *filename, StudentData *data) {
 		data->count++;
 	}
 	fclose(file);
-	printf("Loaded %d students from file.\n", data->count);
+	printf("Loaded %zu students from file.\n", data->count);
 }
 
 
@@ -186,14 +184,14 @@ int is_not_unique(StudentData *data, const char *studentID) {
 
 
 void add_student(StudentData *data) {
-	if (data->count >= MAX_STUDENTS) {
+	if (data->count >= max_students) {
 		printf("Cannot add more students. Storage full!\n");
 		return;
 	}
 
 	char *studentID;
 	printf("Enter Student ID: ");
-	studentID = get_rec(Any.char_ptr_type, MAX_STRING);
+	studentID = get_rec(Any.char_ptr_type, max_string);
 
 	if (is_not_unique(data, studentID)) {
 		printf("Error: Student ID already exists!\n");
@@ -319,7 +317,7 @@ void display_as_tree(StudentData *data) {
 	printf("\n--- Students Displayed as Tree ---\n");
 
 
-	char printedDepartments[MAX_STUDENTS][MAX_STRING];
+	char printedDepartments[max_students][max_string];
 	int	 depCount = 0;
 
 	for (size_t i = 0; i < data->count; i++) {
@@ -339,7 +337,7 @@ void display_as_tree(StudentData *data) {
 		strcpy(printedDepartments[depCount++], data->students[i].department);
 
 
-		char printedMajors[MAX_STUDENTS][MAX_STRING];
+		char printedMajors[max_students][max_string];
 		int	 majCount = 0;
 
 		for (size_t j = 0; j < data->count; j++) {
@@ -360,7 +358,7 @@ void display_as_tree(StudentData *data) {
 				strcpy(printedMajors[majCount++], data->students[j].major);
 
 
-				char printedCourses[MAX_STUDENTS][MAX_STRING];
+				char printedCourses[max_students][max_string];
 				int	 courseCount = 0;
 
 				for (size_t k = 0; k < data->count; k++) {

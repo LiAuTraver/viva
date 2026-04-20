@@ -10,11 +10,11 @@
 #endif
 
 typedef struct viva_node Node;
-static constexpr var		 left_corner = 0x231E;
-static inline void			 trim_str(char *str) __attribute__((nonnull(1)));
-static inline void			 display_tree(const Node *node, ssize_t depth, bool *is_right) __attribute__((nonnull(1, 3)));
-static inline void			 build_tree(Node **nodes, char *const *str, ssize_t *depth) __attribute__((nonnull(1, 2, 3)));
-static inline void			 terminal_init();
+enum { left_corner = 0x231E };
+static inline void trim_str(char *str) __attribute__((nonnull(1)));
+static inline void display_tree(const Node *node, ssize_t depth, bool *is_right) __attribute__((nonnull(3)));
+static inline void build_tree(Node **nodes, char *const *str, ssize_t *depth) __attribute__((nonnull(1, 2, 3)));
+static inline void terminal_init();
 
 typedef struct viva_node {
 	char							data;

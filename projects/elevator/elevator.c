@@ -1,11 +1,12 @@
-#include "elevator.h"
 #include <conio.h>
 
-constexpr int max_weight			 = 500;
-constexpr int all_height			 = 8;
-constexpr int max_wait_time		 = 80;
-constexpr int max_waiting_time = 3;
-
+#include "elevator.h"
+enum {
+	max_weight			 = 500,
+	all_height			 = 8,
+	max_wait_time		 = 80,
+	max_waiting_time = 3,
+};
 
 int total_people = 0;
 int speed;
@@ -737,18 +738,17 @@ void run_game_loop(elevator_t *elevator, floor_t *floors) {
 	timer									= 0;
 	Console.get(&Terminal);
 
-	// set font size
-	CONSOLE_FONT_INFOEX cfi;
-	cfi.cbSize			 = sizeof(cfi);
-	cfi.nFont				 = 0;
-	cfi.dwFontSize.X = 0;
-	cfi.dwFontSize.Y = 24;
-	cfi.FontFamily	 = FF_DONTCARE;
-	cfi.FontWeight	 = FW_NORMAL;
-
-	wcscpy(cfi.FaceName, L"Consolas");
-	SetCurrentConsoleFontEx(Terminal.hOutputConsole, FALSE, &cfi);
-	memset(floors, 0, sizeof floors);
+	SetCurrentConsoleFontEx(Terminal.hOutputConsole, FALSE,
+													&(CONSOLE_FONT_INFOEX){
+														.cbSize				= sizeof(CONSOLE_FONT_INFOEX),
+														.nFont				= 0,
+														.dwFontSize.X = 0,
+														.dwFontSize.Y = 24,
+														.FontFamily		= FF_DONTCARE,
+														.FontWeight		= FW_NORMAL,
+														.FaceName			= L"Consolas",
+													});
+	memset(floors, 0, sizeof(floor_t));
 	while (current_people < total_people || total_people_in_floor > 0 || elevator->total_passenger > 0) {
 		timer++;
 		draw_people(floors);
@@ -767,13 +767,15 @@ status_t elevator_main() {
 	val				time_ptr = localtime(&timep);
 	smart var floors	 = (floor_t *)calloc(sizeof(floor_t), 10);
 	smart var elevator = alloc(elevator_t, 1);
-	*elevator					 = (elevator_t){.total_passenger = 0,
-																		.total_weight		 = 0,
-																		.current_floor	 = 1,
-																		.quarter				 = 0,
-																		.stay_time			 = 0,
-																		.prev_state			 = 1,
-																		.current_state	 = 3};
+	*elevator					 = (typeof(*elevator)){
+						 .total_passenger = 0,
+						 .total_weight		= 0,
+						 .current_floor		= 1,
+						 .quarter					= 0,
+						 .stay_time				= 0,
+						 .prev_state			= 1,
+						 .current_state		= 3,
+	 };
 	hour = time_ptr->tm_hour, minute = time_ptr->tm_min, second = time_ptr->tm_sec;
 	Console.set_color(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY, 0);
 	srand(time(nullptr));
