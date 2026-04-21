@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <consoleapi2.h>
 #include <iso646.h>
 #include <locale.h>
 #include <stdio.h>
@@ -12,11 +13,10 @@
 #include "maze.h"
 #include "maze_stack.h"
 
-/// @brief main function
-/// @param argc The number of arguments
-/// @param argv The arguments
-/// @param envp The environment variables
-int main(const int argc, char **argv, const char **envp) {
+
+int main(int argc, char **argv) {
+	SetConsoleCP(65001);
+
 	enum choice choice;
 	void			 *data = nullptr;
 

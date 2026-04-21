@@ -39,8 +39,7 @@ typedef __uint128_t uint128_t;
 #undef Any
 #pragma push_macro("any")
 #undef any
-//! reduce the size of the union, for `Any` and `any` will only be used for type lookup.
-#pragma pack(push, 1)
+
 union {
 	void							*void_ptr_type;
 	char							*char_ptr_type;
@@ -69,10 +68,11 @@ union {
 #endif
 } static
 #if defined(__GNUC__) && __STDC_VERSION__ >= 202112L
-const /// @note  GCC's typeof() works differently early days, which preserves the const qualifier.
+	const /// @note  GCC's typeof() works differently early days, which preserves the const qualifier.
 #endif
-Any = {.void_ptr_type = nullptr}, any = {.void_ptr_type = nullptr};
-#pragma pack(pop)
+	Any = {.void_ptr_type = nullptr},
+	any = {.void_ptr_type = nullptr};
+
 
 enum VIVA_STATUS_ENUM : unsigned char {
 	kOkStatus = 0,

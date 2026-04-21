@@ -7,14 +7,12 @@
 #include "maze.h"
 #include "maze_stack.h"
 
-#pragma pack(push, 1)
 struct maze {
 	wchar_t *data;
 	COORD		 size;
 	COORD		 entrance;
 	COORD		 exit;
 };
-#pragma pack(pop)
 
 status_t random_maze_init(struct maze *maze, const SHORT size, bool *square) {
 	maze->data = alloc(wchar_t, size * size);
@@ -208,10 +206,13 @@ status_t parse_args(const int argc, char ***argv, enum choice *choice, void **da
 
 status_t maze_main(const enum choice choice, void *data) {
 	smart_maze var maze = alloc(struct maze, 1);
-	maze->size					= (COORD){0, 0};
-	maze->entrance			= (COORD){0, 0};
-	maze->exit					= (COORD){0, 0};
-	maze->data					= nullptr;
+
+	*maze = (struct maze){
+		.size			= (COORD){0, 0},
+		.entrance = (COORD){0, 0},
+		.exit			= (COORD){0, 0},
+		.data			= nullptr,
+	};
 
 	if (choice == kExample)
 		read_example_maze(maze, example_maze, 20);

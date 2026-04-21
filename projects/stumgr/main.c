@@ -10,9 +10,19 @@ enum {
 	max_students = 1000,
 	max_string	 = 100,
 };
+typedef struct {
+	char id[max_string];
+	char name[max_string];
+	char major[max_string];
+	char department[max_string];
+	char course[max_string];
+} Student;
 
-typedef struct _student			 Student;
-typedef struct _student_data StudentData;
+typedef struct {
+	Student *students;
+	size_t	 count;
+} StudentData;
+
 
 void load_csv(const char *filename, StudentData *data);
 void save_csv(const char *filename, StudentData *data);
@@ -26,26 +36,13 @@ void modify_student(StudentData *data, char *student_ID);
 void push_history(Student *student);
 void pop_history(StudentData *data);
 
-typedef struct _student {
-	char id[max_string];
-	char name[max_string];
-	char major[max_string];
-	char department[max_string];
-	char course[max_string];
-} Student;
 
-typedef struct _student_data {
-	Student *students;
-	size_t	 count;
-} StudentData;
+typedef struct {
+	struct _history_student {
+		struct _history_student *prev;
+		Student									*change;
+	} *head;
 
-struct _history_student {
-	struct _history_student *prev;
-	struct _student					*change;
-};
-
-typedef struct _history {
-	struct _history_student *head;
 } History;
 
 var history = (History *)nullptr;
@@ -56,15 +53,15 @@ int main(int argc, char **argv, char **envp) {
 		file_path = "data.csv";
 	else
 		file_path = *(argv + 1);
-	var _students_ = alloc(Student, max_students);
-	var data			 = (StudentData){
-					.students = _students_,
-					.count		= 0,
+
+	var data = &(StudentData){
+		.students = alloc(Student, max_students),
+		.count		= 0,
 	};
 
 	char *studentID;
 
-	load_csv(file_path, &data);
+	load_csv(file_path, data);
 
 	while (true) {
 		print("\n--- Student Management System ---\n");
@@ -82,39 +79,39 @@ int main(int argc, char **argv, char **envp) {
 
 		switch (choice) {
 		case 1:
-			display_students(&data);
+			display_students(data);
 			break;
 		case 2:
-			display_as_tree(&data);
+			display_as_tree(data);
 			break;
 		case 3:
-			add_student(&data);
+			add_student(data);
 			break;
 		case 4:
 			printf("Enter Student ID to delete: ");
 			studentID = get_rec(Any.char_ptr_type, max_string);
-			delete_student(&data, studentID);
+			delete_student(data, studentID);
 			break;
 		case 5:
 			printf("Enter the Student ID to modify: ");
 			studentID = get_rec(Any.char_ptr_type, max_string);
-			modify_student(&data, studentID);
+			modify_student(data, studentID);
 			break;
 		case 6:
 			printf("Enter Student ID to query: ");
 			studentID = get_rec(Any.char_ptr_type, max_string);
-			query_student(&data, studentID);
+			query_student(data, studentID);
 			break;
 		case 7:
-			save_csv(file_path, &data);
+			save_csv(file_path, data);
 			printf("Data saved to %s. Exiting...\n", file_path);
 			return 0;
 		case 8:
 			printf("Revert the last change\n");
-			if (history == nullptr) {
+			if (!history) {
 				printf("No history found.\n");
 			} else {
-				pop_history(&data);
+				pop_history(data);
 				printf("Last change reverted.\n");
 			}
 

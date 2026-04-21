@@ -1,7 +1,6 @@
 #pragma once
 #include <stdint.h>
 
-#include <accat/viva/internal/compat.h>
 typedef enum : int {
 	SIMFS_OK											= 0,
 	SIMFS_ERR_INVALID_ARGUMENT		= -1,
@@ -27,7 +26,7 @@ simfs_error_t simfs_format(const char *disk_name);
 simfs_error_t simfs_mount(const char *disk_name);
 
 simfs_error_t simfs_touch(const char *name);
-simfs_error_t simfs_open(const char *name);
+simfs_fd_t simfs_open(const char *name);
 simfs_error_t simfs_close(int fd);
 simfs_fd_t		simfs_read(int fd, void *buffer, uint32_t size);
 simfs_fd_t		simfs_write(int fd, const void *buffer, uint32_t size);
@@ -38,5 +37,5 @@ simfs_error_t simfs_ls(void);
 simfs_error_t simfs_ls_path(const char *path);
 simfs_error_t simfs_cd(const char *path);
 
-#define SIMFS_ERROR(msg) printf("\033[31m" msg "\033[0m\n")
-#define SIMFS_INFO(msg) printf("\033[32m" msg "\033[0m\n")
+#define SIMFS_ERROR(msg) fprintf(stderr, "\033[31m" msg "\033[0m\n")
+#define SIMFS_INFO(msg) fprintf(stdout, "\033[32m" msg "\033[0m\n")

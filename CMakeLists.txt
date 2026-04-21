@@ -31,8 +31,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/projects/simfs)
 
 add_executable(stack_test
   ${CMAKE_CURRENT_SOURCE_DIR}/test/stack.c
-  ${VIVA_HEADERS}
   ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/maze_stack.c
   ${CMAKE_CURRENT_SOURCE_DIR}/projects/maze/maze_stack.h
+  ${VIVA_HEADERS}
 )
 set_target_properties(stack_test PROPERTIES LINKER_LANGUAGE C)

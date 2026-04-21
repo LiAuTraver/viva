@@ -933,7 +933,7 @@ simfs_fd_t simfs_read(int fd, void *buffer, uint32_t size) {
 	return (int)bytes_read;
 }
 
-simfs_error_t simfs_write(int fd, const void *buffer, uint32_t size) {
+simfs_fd_t simfs_write(int fd, const void *buffer, uint32_t size) {
 
 	if (!vdisk)
 		return SIMFS_ERR_NOT_MOUNTED;
